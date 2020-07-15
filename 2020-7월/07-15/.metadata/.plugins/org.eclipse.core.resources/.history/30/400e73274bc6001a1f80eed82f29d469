@@ -1,0 +1,7 @@
+
+public class Class1 extends SuperClass {
+	int class1V1;
+	public void class1Method() {
+		System.out.println("Class1의 매서드 - class1v1 : " + class1V1);
+	}
+}

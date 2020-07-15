@@ -1,0 +1,7 @@
+
+public class Class1 {
+	int v1;
+	public void method1() {
+		System.out.println("Classs1ÀÇ º¯¼ö v1 : " +v1);
+	}
+}
