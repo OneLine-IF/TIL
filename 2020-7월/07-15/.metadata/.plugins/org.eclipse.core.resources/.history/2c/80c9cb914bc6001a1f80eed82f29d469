@@ -1,0 +1,11 @@
+
+public class SuperClass {
+	int superV1;
+	public void superMethod() {
+		System.out.println("SuperClass의 매서드 - superV1 : " + superV1);
+	}
+	
+	public void superMethod2() {
+		System.out.println("superClass의 메서드2");
+	}
+}

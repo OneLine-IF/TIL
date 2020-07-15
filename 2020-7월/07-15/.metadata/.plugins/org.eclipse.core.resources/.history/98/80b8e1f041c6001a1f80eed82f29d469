@@ -1,0 +1,12 @@
+
+public class ConTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		new ConTest();
+	}
+	//매개변수가 없는 생성자 = default 생성자
+	public ConTest() {
+		System.out.println("Default 생성자");
+	}
+}
