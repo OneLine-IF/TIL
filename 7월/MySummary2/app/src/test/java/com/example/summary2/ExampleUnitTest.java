@@ -1,4 +1,4 @@
-package com.example.summary;
+package com.example.summary2;
 
 import org.junit.Test;
 
