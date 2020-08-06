@@ -1,0 +1,204 @@
+2-4-2 비트맵 버튼 만들기
+1. 비트맵 버튼 만들기
+(1) 비트맵 버튼을 직접 만들어 normal일 경우와 clicked일 경우의 이미지를 표시
+2. 뷰 위에 그래픽을 그리는 과정
+ (1) 뷰에 그래픽이 그려질 때 onDraw()메소드 호출됨
+ (2) 다시 그리기는 invalidate() 메소드 사용
+3. BitmapButton이라는 java파일을 새로 만들기 --> AppCompatButton상속 받기 --> 오른쪽 마우스 버튼 --> generate --> 1,2번째 다운
+```java
+package com.example.button;
+
+import android.content.Context;
+import android.util.AttributeSet;
+
+import androidx.appcompat.widget.AppCompatButton;
+
+public class BitmapButton extends AppCompatButton {
+    public BitmapButton(Context context) {
+        super(context);
+    }
+
+    public BitmapButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+}
+```
+4. 글자 크기 변경
+res>values>새로운 xml파일 dimens
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size">16dp</dimen>
+</resources>
+```
+5. 중간 코드 정리
+```java
+package com.example.button;
+
+import android.content.Context;
+import android.util.AttributeSet;
+
+import androidx.appcompat.widget.AppCompatButton;
+
+public class BitmapButton extends AppCompatButton {
+    public BitmapButton(Context context) {
+        super(context);
+        init(context);//새로 만들 메서드
+    }
+
+    public BitmapButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+    private void init(Context context){
+        setBackgroundResource(R.drawable.title_bitmap_button_normal);//배경이미지 지정
+        float textSize = getResources().getDimension(R.dimen.text_size);
+        setTextSize(textSize);
+    }
+}
+```
+6. Generate>OverrideMethods>onTouchEvent
+```java
+package com.example.button;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+
+import androidx.appcompat.widget.AppCompatButton;
+
+public class BitmapButton extends AppCompatButton {
+    public BitmapButton(Context context) {
+        super(context);
+        init(context);//새로 만들 메서드
+    }
+
+    public BitmapButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+    private void init(Context context){
+        setBackgroundResource(R.drawable.title_bitmap_button_normal);//배경이미지 지정
+        float textSize = getResources().getDimension(R.dimen.text_size);
+        setTextSize(textSize);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+}
+```
+7. 비트맵 버튼 정의 완료 코드
+```java
+package com.example.button;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+
+import androidx.appcompat.widget.AppCompatButton;
+
+public class BitmapButton extends AppCompatButton {
+    public BitmapButton(Context context) {
+        super(context);
+        init(context);//새로 만들 메서드
+    }
+
+    public BitmapButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+    private void init(Context context){
+        setBackgroundResource(R.drawable.title_bitmap_button_normal);//배경이미지 지정
+        float textSize = getResources().getDimension(R.dimen.text_size);
+        setTextSize(textSize);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action){
+            case MotionEvent.ACTION_DOWN:
+            setBackgroundResource(R.drawable.title_bitmap_button_clicked);
+
+            break;
+            case  MotionEvent.ACTION_UP:
+            setBackgroundResource(R.drawable.title_bitmap_button_normal);
+
+            break;
+
+        }
+
+        invalidate();//버튼의 그래픽을 다시 그려주는 것.
+        return true;
+
+    }
+}
+```
+8. activity_main.xml에서 Bitmap버트 호출
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.example.button.BitmapButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+
+</LinearLayout>
+```
+9. BitmapButton.java에서 글자 색 변경 코드 추가
+```java
+package com.example.button;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+
+import androidx.appcompat.widget.AppCompatButton;
+
+public class BitmapButton extends AppCompatButton {
+    public BitmapButton(Context context) {
+        super(context);
+        init(context);//새로 만들 메서드
+    }
+
+    public BitmapButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+    private void init(Context context){
+        setBackgroundResource(R.drawable.title_bitmap_button_normal);//배경이미지 지정
+
+        float textSize = getResources().getDimension(R.dimen.text_size);
+        setTextSize(textSize);
+        setTextColor(Color.WHITE);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action){
+            case MotionEvent.ACTION_DOWN:
+            setBackgroundResource(R.drawable.title_bitmap_button_clicked);
+
+            break;
+            case  MotionEvent.ACTION_UP:
+            setBackgroundResource(R.drawable.title_bitmap_button_normal);
+
+            break;
+
+        }
+
+        invalidate();//버튼의 그래픽을 다시 그려주는 것.
+        return true;
+
+    }
+}
+```

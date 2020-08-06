@@ -1,0 +1,53 @@
+1-8-2 쉐이프 드로어블
+* 드로어블 = xml에서 직접 도형을 그리는 것
+1. 타원으로 바꾸는 코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <size android:width="200dp" android:height="120dp"/>
+    <stroke android:width="1dp" android:color="#0000ff"/>
+    <solid android:color="#aaddff" />
+    <padding android:bottom="1dp" />
+
+</shape>
+```
+2. 레이아웃에 그라데이션 넣는 xml코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <gradient
+        android:startColor="#7288DB"
+        android:centerColor="#3250B4"
+        android:endColor="#254095"
+        android:angle="90"
+        android:centerY="0.5"
+        />
+    <corners android:radius="2dp" />
+
+</shape>
+```
+3. 레이아웃 색깔 넣는 코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="1dp" android:color="#BE55DA" />
+            <solid android:color="#00000000" />
+
+        </shape>
+    </item>
+
+    <item android:top="1dp" android:bottom="1dp" android:right="1dp" android:left="1dp">
+        <shape  android:shape="rectangle">
+            <stroke android:width="1dp" android:color="#BE55DA" />
+            <solid android:color="#00000000" />
+        </shape>
+    </item>
+
+</layer-list>
+```

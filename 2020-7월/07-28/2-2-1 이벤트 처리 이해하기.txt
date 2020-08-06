@@ -1,0 +1,314 @@
+2-2-1 이벤트 처리 이해하기
+1. 이벤트 처리 = 버튼을 클릭했을 때 버튼을 클릭한 거를 이벤트를 통해 전달.
+2. 대표적인 이벤트
+- 터치 이벤트 = 화면을 손가락으로 누를 때 발생하는 이벤트
+- 키 이벤트 = 키패드나 하드웨어 버튼을 누를 때 발생
+- 제스처 이벤트 = 터치 이벤트 중에서 일정 패턴을 만들어 내는 이벤트
+- 포커스 = 뷰마다 순서대로 주어지는 포커스
+- 화면 방향 변경 = 화면의 방향이 가로/세로 바뀜에 따라 발생.
+3. 뷰 3개로 분할하고 색깔 넣은 코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#03A9F4" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FF9800" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="16dp" />
+    </ScrollView>
+
+</LinearLayout>
+```
+4. 입력한 텍스트 옮겨서 보이게 하는 코드
+``java
+package com.example.event;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+    TextView textView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        textView = (TextView) findViewById(R.id.textView);
+
+    }
+    public void println(String data){
+        textView.append(data+ "\n");
+    }
+}
+```
+5. 터치 이벤트 (터치시, 속도 변화와 터치한 좌표 표시)
+```java
+package com.example.event;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+    TextView textView;
+    GestureDetector detector;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        textView = (TextView) findViewById(R.id.textView);
+        View view = findViewById(R.id.view);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getAction();
+                float curX = motionEvent.getX();
+                float curY = motionEvent.getY();
+
+                if(action==MotionEvent.ACTION_DOWN){
+                    println("손가락 눌렸음 : "+curX+","+curY);
+                }else if(action==MotionEvent.ACTION_MOVE){
+                    println("손가락 움직임 : "+curX+","+curY);
+                }else if(action==MotionEvent.ACTION_UP){
+                    println("손가락 떼졌음 : "+curX+","+curY);
+                }
+                return true;
+            }
+        });
+
+        detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent motionEvent) {
+                println("onDown 호출됨.");
+                return true;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent motionEvent) {
+                println("onShowPress 호출됨.");
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent motionEvent) {
+                println("onSingleTapUp 호출됨.");
+                return true;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                println("onScroll 호출됨. : "+ v +","+ v1);
+                return true;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent motionEvent) {
+                println("onLongPress 호출됨.");
+            }
+
+            @Override
+            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                println("onFling 호출됨.: " + v +","+v1);
+                return true;
+            }
+        });
+
+        View view2=findViewById(R.id.view2);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                detector.onTouchEvent(motionEvent);
+                return true;
+            }
+        });
+    }
+    public void println(String data){
+        textView.append(data+ "\n");
+    }
+}
+```
+6. 키 입력 이벤트 처리하기
+7. BACK 버튼 누르면 종료 안되고 메세지 나오는 코드
+```java
+package com.example.event;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+    TextView textView;
+    GestureDetector detector;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        textView = (TextView) findViewById(R.id.textView);
+        View view = findViewById(R.id.view);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getAction();
+                float curX = motionEvent.getX();
+                float curY = motionEvent.getY();
+
+                if(action==MotionEvent.ACTION_DOWN){
+                    println("손가락 눌렸음 : "+curX+","+curY);
+                }else if(action==MotionEvent.ACTION_MOVE){
+                    println("손가락 움직임 : "+curX+","+curY);
+                }else if(action==MotionEvent.ACTION_UP){
+                    println("손가락 떼졌음 : "+curX+","+curY);
+                }
+                return true;
+            }
+        });
+
+        detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent motionEvent) {
+                println("onDown 호출됨.");
+                return true;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent motionEvent) {
+                println("onShowPress 호출됨.");
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent motionEvent) {
+                println("onSingleTapUp 호출됨.");
+                return true;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                println("onScroll 호출됨. : "+ v +","+ v1);
+                return true;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent motionEvent) {
+                println("onLongPress 호출됨.");
+            }
+
+            @Override
+            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                println("onFling 호출됨.: " + v +","+v1);
+                return true;
+            }
+        });
+
+        View view2=findViewById(R.id.view2);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                detector.onTouchEvent(motionEvent);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            Toast.makeText(this,"시스템 BACK 버튼 눌림.",Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
+
+    public void println(String data){
+        textView.append(data+ "\n");
+    }
+}
+```
+8. 입력상자 배경설정
+(1)Activity main에서
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#03A9F4" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FF9800" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="16dp" />
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/editTextTextPersonName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_seletor"
+        android:ems="10"
+        android:inputType="text"
+        android:text="" />
+
+</LinearLayout>
+```
+(2) 새로운 xml파일에서
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_focused="true"
+        android:state_pressed="true"
+        android:drawable="@drawable/iconfinder_marker3_1913615"/>
+    <item
+        android:drawable="@drawable/iconfinder_crayon4_1913621"/>
+</selector>
+```
