@@ -1,0 +1,291 @@
+2-3-1 토스트 보여주기
+1. 토스트와 대화상자
+(1) 토스트 = 간단한 메시지를 잠깐 보여주었다가 없어지는 뷰로 애플리케이션 위에 떠 있는 뷰.
+(2) 버튼에 토스트 창 띄우기
+- MainActivity에서.
+```java
+package com.example.toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(),"위치가 바뀐 토스트",Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP|Gravity.LEFT,200,200);
+                toast.show();//토스트가 보이게 함.
+            }
+        });
+    }
+}
+```
+(Offset값을 조정하면 가운데에서 약간씩 옮겨진 위치로 보여지게 됨)
+(3) 토스트 모양 바꾸기
+- MainActivity 코드
+```java
+package com.example.toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(),"위치가 바뀐 토스트",Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP|Gravity.LEFT,200,200);
+                toast.show();//토스트가 보이게 함.
+            }
+        });
+
+        Button button2 = (Button)findViewById(R.id.button2);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = getLayoutInflater();
+                View layout = inflater.inflate(R.layout.toastborder,(ViewGroup) findViewById(R.id.toast_layout_root));
+                TextView text = (TextView) layout.findViewById(R.id.text);
+            }
+        });
+
+    }
+}
+```
+-새로운 xml toastborder.xml코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/toast_layout_root">
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:textSize="40dp"/>/*글자와 테두리 사이를 띄워줌.*/
+</LinearLayout>```
+(4) 토스트 배경색 설정
+- toastborder.xml코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/toast_layout_root">
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:textSize="40dp"
+        android:background="@drawable/toast"/>//padding은 글자와 테두리 사이를 띄워줌.
+</LinearLayout>
+```
+- toast.xml코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke
+        android:width="4dp"
+        android:color="#ffffff00"/>
+    <solid
+        android:color="#ff883300"/>
+    <padding
+        android:left="20dp"
+        android:top="20dp"
+        android:right="20dp"
+        android:bottom="20dp"/>
+    <corners
+        android:radius="15dp"/>//둥글게 해줌.
+
+
+</shape>
+```
+- MainActivuty 코드
+```java
+package com.example.toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(),"위치가 바뀐 토스트",Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP|Gravity.LEFT,200,200);
+                toast.show();//토스트가 보이게 함.
+            }
+        });
+
+        Button button2 = (Button)findViewById(R.id.button2);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = getLayoutInflater();
+                View layout = inflater.inflate(R.layout.toastborder,(ViewGroup) findViewById(R.id.toast_layout_root));
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                text.setText("모양을 바꾼 토스트 입니당.");
+                Toast toast = new Toast(getApplicationContext());
+                toast.setGravity(Gravity.CENTER,0,-100);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+            }
+        });
+
+    }
+}
+```
+2. 스낵바
+(1) 외부 라이브러리에 들어가 있음
+(2) File > project structure > app선택>Dependencies선택>design다운>Gradle Scripts>build.gradle
+```java
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
+
+    defaultConfig {
+        applicationId "com.example.toast"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.android.support:design:30.+'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+}
+```
+(버전을 맞게 변경)
+(3) MainActivity에서
+```java
+package com.example.toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(),"위치가 바뀐 토스트",Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP|Gravity.LEFT,200,200);
+                toast.show();//토스트가 보이게 함.
+            }
+        });
+
+        Button button2 = (Button)findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = getLayoutInflater();
+                View layout = inflater.inflate(R.layout.toastborder,(ViewGroup) findViewById(R.id.toast_layout_root));
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                text.setText("모양을 바꾼 토스트 입니당.");
+                Toast toast = new Toast(getApplicationContext());
+                toast.setGravity(Gravity.CENTER,0,-100);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+            }
+        });
+
+        Button button3 = (Button)findViewById(R.id.button3);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v,"스낵바입니당",Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+    }
+}
+```
+(Button코드 복사&붙여넣기 할 때 3개의 이름을 변경해 주어야 함)
