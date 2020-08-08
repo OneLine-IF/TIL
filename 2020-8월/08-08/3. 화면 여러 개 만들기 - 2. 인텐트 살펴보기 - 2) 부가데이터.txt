@@ -1,43 +1,51 @@
 3. 화면 여러 개 만들기 - 2. 인텐트 살펴보기 - 2) 부가데이터
-1. 플래그
-- SILGLE_TOP 이나 CLEAR_TOP 사용 가능
-2. setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);나 addFlags를 이용해 인텐트에 플래그를 줄 수 있음
-3. Serializable 또는 Parcelable로 하면 객체 자체를 전달할 수 있다.
-- 인텐트 안에 Extra 데이터를 넣어서 다른 액티비티나 다른 애플리케이션 구성요소를 전달할 수 있음.
-4. app > new > Activity > Empty Activity =>  Menu Activity.xml과 .java가 만들어짐
-5. button하나를 추가하고 클릭 메소드 호출
+13. SimpleData.java 코드
 ```java
 package com.example.myparcelable;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+public class SimpleData implements Parcelable {
 
-public class MainActivity extends AppCompatActivity {
+    int number;
+    String message;
+
+    public SimpleData(int number, String message) {
+        this.number = number;
+        this.message = message;//이게 생성자 생성한 것인데, 직접 써도 되고, Generate > Constructor 해도 됨.
+    }
+
+    public SimpleData(Parcel src){
+        number = src.readInt();//Integer 타입의 변수를 하나 읽어서 number 에 넣어주는 것.
+        message = src.readString();
+        // Parcel 에서 SimpleData 안에 들어가 있는 변수를 read 로 복원.
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+        public SimpleData createFromParcel(Parcel src){
+            return new SimpleData(src);
+        }
+        public SimpleData[] newArray(int size){
+            return  new SimpleData[size];
+        }
+    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public int describeContents() {
+        return 0;
+    }
 
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        // Parcle 객체로 써준다는 의미.
+        dest.writeInt(number);
+        dest.writeString(message);
     }
 }
+//Simple Data 가 Parcel 로 바뀜. ==> Parcel 은 Data 를 다른 곳으로 전달할 때 사용되는 객체임.
 ```
-6. Intent 호출
-```java
-Intent intent = new Intent();
-```
-7. MainActivity.java 
+14. SimpleData를 MainActivity.java에 추가
 ```java
 package com.example.myparcelable;
 
@@ -47,6 +55,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,6 +70,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),MenuActivity.class);//Context 파라미터와 클래스 인스턴스 넣어주기
+
+
+                ArrayList<String> names = new ArrayList<String>();//ArrayList 를 이용하면 여러개의 데이터를 주고 받을 수 있음, 특정 타입의 형태만 넣고 싶을 때 <>에 String 입력.
+                names.add("박지민");//추가
+                names.add("황수현");
+
+                getIntent().putExtra("names",names);//위의 데이터를 넣는 것.
+
+                SimpleData data = new SimpleData(100,"Hello");
+                intent.putExtra("data", data);// 데이터라는 키 값을 넣고 데이터라는 객체를 넣을 수 있음.
+
                 startActivityForResult(intent, 101);//응답을 받고 싶을 때 ForResult 사용, 그 다음에 요청 코드를 넣는 것.
             }
         });
@@ -67,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
-8. MenuActivity.xml에서 버튼 추가
-9. MenuActivity.java에서 클릭메소드 추가
+15. MenuActivity.java에서 Intent 건네 받기
 ```java
 package com.example.myparcelable;
 
@@ -111,87 +131,13 @@ public class MenuActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"전달받은 이름 리스트 갯수 : "+names.size(),Toast.LENGTH_LONG).show();//names안에 이름이 몇개 들어가 있는지.
             }
 
+            SimpleData data = (SimpleData) intent.getParcelableExtra("data");//Parcelable 을 구현한 data 값이 있다는 것.
+
+            if(data!=null){
+                Toast.makeText(getApplicationContext(),"전달받은 SimpleData : "+data.message,Toast.LENGTH_LONG).show();
+            }
         }
     }
 
 }
 ```
-10. Main Activity.java
-```java
-package com.example.myparcelable;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),MenuActivity.class);//Context 파라미터와 클래스 인스턴스 넣어주기
-
-
-                ArrayList<String> names = new ArrayList<String>();//ArrayList 를 이용하면 여러개의 데이터를 주고 받을 수 있음, 특정 타입의 형태만 넣고 싶을 때 <>에 String 입력.
-                names.add("박지민");//추가
-                names.add("황수현");
-
-                getIntent().putExtra("names",names);//위의 데이터를 넣는 것.
-
-                startActivityForResult(intent, 101);//응답을 받고 싶을 때 ForResult 사용, 그 다음에 요청 코드를 넣는 것.
-            }
-        });
-
-    }
-}
-```
-11. java>package>New>javaClass > Parcelable을 implements하기 >Generate> Implement Methods > 2개 ok  
-```java
-public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
-
-    };
-```
-12. 변수선언 후 Generate > Constructor
-```java
-package com.example.myparcelable;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class SimpleData implements Parcelable {
-
-    int number;
-    String message;
-
-    public SimpleData(int number, String message) {
-        this.number = number;
-        this.message = message;
-    }
-
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
-
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
-    }
-}
-```
-13. 
