@@ -1,0 +1,251 @@
+3. 화면 여러 개 만들기 - 5. 브로드캐스트 수신자 사용하기 - 1) 브로드캐스트 수신자
+1. 브로드캐스팅 
+- 여러 사람한테 한꺼번에 데이터를 뿌려주는 것.
+2. MainActivity.java
+(1) app> New > other > Broadcast Reciever
+(2) onRecieve() 는 SMS가 오면 자동으로 호출되게 함.
+(3) 별도로 시작시킬 필요가 없음(Manigest에서 알아서 인식함)
+(4)
+```java
+package com.example.smsreciever;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+public class SMSReciecer extends BroadcastReceiver {
+    private static final String TAG = "SmsReciever";
+    //로그로 뭔가 찍기 위해 태그 만들기, tag 는 로그를 찍을 때 구분자 역할을 함.
+
+
+   @Override
+    public void onReceive(Context context, Intent intent) {
+       Log.d(TAG,"onReceive() 호출됨.");
+    }
+}
+```
+3. Manifest에 무엇을 받을 건지 등록해 주어야 하며 권한도 허가도 해주어야 함.
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.smsreciever">
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <receiver
+            android:name=".SMSReciecer"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECIEVED"/>
+            </intent-filter>
+
+        </receiver>
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+```
+4. SMSReciever.java
+```java
+package com.example.smsreciever;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.nfc.Tag;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
+import android.telephony.SmsMessage;
+import android.util.Log;
+
+import java.sql.Date;
+
+public class SMSReciecer extends BroadcastReceiver {
+    private static final String TAG = "SmsReciever";
+    //로그로 뭔가 찍기 위해 태그 만들기, tag 는 로그를 찍을 때 구분자 역할을 함.
+
+
+   @Override
+    public void onReceive(Context context, Intent intent) {
+       Log.d(TAG,"onReceive() 호출됨.");
+
+       Bundle bundle = intent.getExtras();//이 안에 번들이라는 객체가 있음, 이 번들은 Extra data 를 담고 있는 애임, 그것자체를 꺼내는 것.
+       SmsMessage[] messages = parseSmsMessage(bundle);
+       if(messages.length>0){
+           String sender = messages[0].getOriginatingAddress();//getOriginatingAddress() 는 발신 번호임.
+           Log.d(TAG,"sender : "+sender);
+           String contents = messages[0].getMessageBody().toString();//메세지 내용이 떨어짐.
+           Log.d(TAG,"contents : "+contents);
+           Date recievedDate = new Date(messages[0].getTimestampMillis());//발신시각이 들어가 있음.
+           Log.d(TAG,"recieved date : "+recievedDate);
+       }
+    }
+
+    private SmsMessage[] parseSmsMessage(Bundle bundle){
+       Object[] objs = (Object[]) bundle.get("pdus");
+       SmsMessage[] messages = new SmsMessage[objs.length];
+       for(int i=0;i<objs.length;i++){
+           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+               //마시멜로 버전보다 큰 버전일 경우
+               String format = bundle.getString("format");
+               messages[i] = SmsMessage.createFromPdu((byte[])objs[i],format);
+
+           }else {
+               messages[i] = SmsMessage.createFromPdu((byte[]) objs[i]);//get 에서 뽑아 놓은 데이터 pdu 를 던지는 것.
+           }
+       }return messages;
+    }
+}
+```
+5. 받은 SMS 데이터를 화면에 보여주는 기능 만들기
+(1) app > New > Activity > Empty Activity
+(2) 
+```java
+package com.example.smsreciever;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+public class SmsActivity extends AppCompatActivity {
+    EditText editText1;
+    EditText editText2;
+    EditText editText3;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sms);
+
+        editText1 = (EditText) findViewById(R.id.editTextTextPersonName);
+        editText2 = (EditText) findViewById(R.id.editTextTextPersonName2);
+        editText3 = (EditText) findViewById(R.id.editTextTextPersonName3);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                //이 화면으로 브로드캐스트리시버에서 데이터를 보내야 함, 데이터를 보내려면 인텐트에 넣어서 보내야함.
+            }
+        });
+
+        Intent passedIntent = getIntent();//전달받은 인텐트를 확인.
+        processCommand(passedIntent);
+    }
+
+    //SmsActivity 가 이미 화면에 떠있는 경우나 이미 만들어져있는 상태라면 Generate > Override Method > onNewIntent
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        processCommand(intent);
+        super.onNewIntent(intent);
+    }
+
+    private void processCommand(Intent intent){
+        if(intent!=null){
+            String sender = intent.getStringExtra("sender");
+            String contents = intent.getStringExtra("contents");
+            String recievedDate = intent.getStringExtra("recievedDate");
+            editText1.setText(sender);
+            editText3.setText(contents);
+            editText2.setText(recievedDate);
+        }
+
+    }
+}
+```
+(3) 
+```java
+package com.example.smsreciever;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.nfc.Tag;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
+import android.provider.Telephony;
+import android.telephony.SmsMessage;
+import android.util.Log;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
+public class SMSReciecer extends BroadcastReceiver {
+    private static final String TAG = "SmsReciever";
+    //로그로 뭔가 찍기 위해 태그 만들기, tag 는 로그를 찍을 때 구분자 역할을 함.
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");//문자열을 넣어주면 어떤 형식으로 변환할지가 나옴.
+
+
+   @Override
+    public void onReceive(Context context, Intent intent) {
+       Log.d(TAG,"onReceive() 호출됨.");
+
+       Bundle bundle = intent.getExtras();//이 안에 번들이라는 객체가 있음, 이 번들은 Extra data 를 담고 있는 애임, 그것자체를 꺼내는 것.
+       SmsMessage[] messages = parseSmsMessage(bundle);
+       if(messages.length>0){
+           String sender = messages[0].getOriginatingAddress();//getOriginatingAddress() 는 발신 번호임.
+           Log.d(TAG,"sender : "+sender);
+           String contents = messages[0].getMessageBody().toString();//메세지 내용이 떨어짐.
+           Log.d(TAG,"contents : "+contents);
+           Date recievedDate = new Date(messages[0].getTimestampMillis());//발신시각이 들어가 있음.
+           Log.d(TAG,"recieved date : "+recievedDate);
+
+           sendToActivity(context, sender,contents,recievedDate);//액티비티쪽으로 데이터를 전달하는 메서드.
+       }
+    }
+
+    private void sendToActivity(Context context, String sender, String contents, Date receivedDate){
+       Intent intent = new Intent(context, SmsMessage.class);
+       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP|
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP);//화면이 없는데서 화면을 띄워줄 때 필요.
+       intent.putExtra("sender", sender);
+       intent.putExtra("contents",contents);
+       intent.putExtra("receivedDate", format.format(receivedDate));
+
+       context.startActivity(intent);
+    }
+
+    private SmsMessage[] parseSmsMessage(Bundle bundle){
+       Object[] objs = (Object[]) bundle.get("pdus");
+       SmsMessage[] messages = new SmsMessage[objs.length];
+       for(int i=0;i<objs.length;i++){
+           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+               //마시멜로 버전보다 큰 버전일 경우
+               String format = bundle.getString("format");
+               messages[i] = SmsMessage.createFromPdu((byte[])objs[i],format);
+
+           }else {
+               messages[i] = SmsMessage.createFromPdu((byte[]) objs[i]);//get 에서 뽑아 놓은 데이터 pdu 를 던지는 것.
+           }
+       }return messages;
+    }
+}
+```
