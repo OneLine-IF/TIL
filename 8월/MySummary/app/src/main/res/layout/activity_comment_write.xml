@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:isIndicator="false"
-            android:layout_marginHorizontal="85dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:numStars="5"
             android:rating="0"
