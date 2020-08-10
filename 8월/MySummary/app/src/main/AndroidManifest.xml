@@ -9,8 +9,10 @@
         android:roundIcon="@drawable/ic_app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CommentReadActivity"
-            android:label="한줄평 목록">
+        <activity android:name=".CommentReadActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
         </activity>
         <activity android:name=".CommentWriteActivity" />
         <activity android:name=".MainActivity">
