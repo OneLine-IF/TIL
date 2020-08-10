@@ -1,0 +1,237 @@
+3. 화면 여러 개 만들기 - 4. 서비스 사용하기 - 1) 서비스
+1. 자동으로 재시작되는 서비스
+(1) 서비스는 화면이 없는 것.
+(2) 서비스는 화면이 없는 상태에서 백그라운드로 실행됨
+(3) 서비스는 프로세스가 종료되어도 시스템에서 자동으로 재시작함
+2. app>new>service
+3. MainActivity.java
+```java
+package com.example.service;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+public class MainActivity extends AppCompatActivity {
+    EditText editText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        editText = (EditText) findViewById(R.id.editTextTextPersonName);
+
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editText.getText().toString();//데이터를 부가데이터로 넣어서 전달, 데이터는 입력상자에 들어있음.
+
+                Intent intent = new Intent(getApplicationContext(), MyService.class);// getApplicationContext 에 Context 객체가 들어감, 서비스 객체의 이름 결정.
+                intent.putExtra("command","show"); //인텐트 안에는 Extra data 를 넣을 수 있음, command 로 어떤데이터인지 구분을 함.
+                intent.putExtra("name", name); //name 이라는 키 값을 이용해서 사용자가 입력한 그값을 넣어줌.
+                startService(intent); // 서비스 실행. > 전달받은 부가데이터를 통해 우리가 하고 싶은 것이 있을 텐데, 그를 위하여 MyService.java로 이동.
+
+
+            }
+        });
+
+    }
+}
+```
+4. MyService.java
+(1) Generate > Override Methods
+(2)
+```java
+package com.example.service;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.util.Log;
+
+public class MyService extends Service {
+    private static final String TAG = "MyService";
+
+    public MyService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG,"onCreate 호출됨.");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG,"onStartCommand 호출됨.");
+
+        if(intent == null){
+            return Service.START_STICKY; //다시 자동으로 시작.
+        }else{
+            //intent 가  null 이 아닌 경우임.
+            processCommand(intent);//processCommand 를 만들어 intent 를 처리.
+        }
+        return super.onStartCommand(intent, flags, startId);
+        // MainActivity.java 에서 전달한 intent 는 여기 onStartCommand 에서 처리 및 확인 가능.
+    }
+
+    private void processCommand(Intent intent){
+        String command = intent.getStringExtra("command");// 다양한 데이터가 무엇을 위한 것인지 구분하기 위하여 command 를 쓰는 것.
+        String name = intent.getStringExtra("name");
+        Log.d(TAG, "전달 받은 데이터 : "+command+","+name);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Log.d(TAG,"onDestroy 호출됨.");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+}
+```
+5. 액티비티에서 서비스를 실행하거나 액티비티에서 서비스로 어떤 데이터를 전달하고 싶을 때 > 시스템을 항상 통과시켜야함.
+6. 서비스에서 액티비티로 보내주는 상황(위에는 액티비티에서 서비스로 보내주는 상황이었음.)
+7. 인테트로 전화걸기 화면을 띄울 수 있는데, 이런 경우에 각각의 화면이 연속적으로 뜰 수 있도록 만들어 놓은 게 태스크임. > 이 태스크를 띄우는게 addFlags()
+8. MyService.java
+```java
+package com.example.service;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.util.Log;
+
+public class MyService extends Service {
+    private static final String TAG = "MyService";
+
+    public MyService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG,"onCreate 호출됨.");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG,"onStartCommand 호출됨.");
+
+        if(intent == null){
+            return Service.START_STICKY; //다시 자동으로 시작.
+        }else{
+            //intent 가  null 이 아닌 경우임.
+            processCommand(intent);//processCommand 를 만들어 intent 를 처리.
+        }
+        return super.onStartCommand(intent, flags, startId);
+        // MainActivity.java 에서 전달한 intent 는 여기 onStartCommand 에서 처리 및 확인 가능.
+    }
+
+    private void processCommand(Intent intent){
+        String command = intent.getStringExtra("command");// 다양한 데이터가 무엇을 위한 것인지 구분하기 위하여 command 를 쓰는 것.
+        String name = intent.getStringExtra("name");
+        Log.d(TAG, "전달 받은 데이터 : "+command+","+name);
+
+        try {
+            Thread.sleep(5000);//5초 동안 휴식.
+        }catch (Exception e){};
+
+        Intent showIntent = new Intent(getApplicationContext(),MainActivity.class);
+        showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|// 화면이 없는데서 화면을 띄울 수 있게됨.
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP|//재활용
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP);//그 위에 다른 화면이 있으면 제거해주는 역할.
+        showIntent.putExtra("command","show");
+        showIntent.putExtra("name",name+"from service.");
+        startActivity(showIntent);//액티비티는 새로 만들어지지 않고 기존 액티비티를 그대로 사용하게 됨.
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Log.d(TAG,"onDestroy 호출됨.");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+}
+```
+9. MainActivity.java 에서 MyService.java의 정보를 받을 수 있음.
+(1) Generate > Overridemethods > onNewIntent()
+(2) 
+```java
+package com.example.service;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+    EditText editText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        editText = (EditText) findViewById(R.id.editTextTextPersonName);
+
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editText.getText().toString();//데이터를 부가데이터로 넣어서 전달, 데이터는 입력상자에 들어있음.
+
+                Intent intent = new Intent(getApplicationContext(), MyService.class);// getApplicationContext 에 Context 객체가 들어감, 서비스 객체의 이름 결정.
+                intent.putExtra("command","show"); //인텐트 안에는 Extra data 를 넣을 수 있음, command 로 어떤데이터인지 구분을 함.
+                intent.putExtra("name", name); //name 이라는 키 값을 이용해서 사용자가 입력한 그값을 넣어줌.
+                startService(intent); // 서비스 실행. > 전달받은 부가데이터를 통해 우리가 하고 싶은 것이 있을 텐데, 그를 위하여 MyService.java로 이동.
+
+
+            }
+        });
+
+        Intent passedIntent = getIntent();
+        processCommand(passedIntent);
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        processCommand(intent);
+        super.onNewIntent(intent);
+    }
+
+    private void processCommand(Intent intent){
+        if(intent!=null){
+            String command = intent.getStringExtra("command");
+            String name = intent.getStringExtra("name");
+            Toast.makeText(this,"서비스로부터 전달받은 데이터 : "+command+","+name,Toast.LENGTH_LONG).show();
+        }
+    }
+    //인텐트 안에 들어가 있는 부가데이터는 한 번만 처리해주면 됨, Intent 객체를 전달받은 다음에 그 안에있는 부가데이터 처리.
+}
+```
+10. 액티비티와 서비스 간에 인텐트를 이용해서 서로 실행시켜줄 수가 있음, 실행시키는 것이 주목적이기보다는 대부분의 경우 데이터를 전달하는 용도로 많이 씀.
