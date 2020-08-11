@@ -1,0 +1,66 @@
+# 3. 화면 여러 개 만들기 -5. 브로드캐스트 수신자 사용하기 -  2) 위험권한 부여하기
+1. 일반 권한과 위험 권한(마시멜로 API23부터)
+- 위험 권한은 실행 시 권한 부여
+2. 실행 시 권한 부여
+- 실행 시 권한 부여를 묻는 대화상자 표시
+3. MySMSReceiver에서 위험권한 부여
+(1) MainActivity.java 에서 onCreate가 실행되는 시점에 위험권한을 부여
+(2) 
+```java
+package com.example.smsreciever;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.icu.text.UnicodeSetSpanner;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS);//반환 값이 정수값임.
+
+        if(permissionCheck == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this,"SMS 권한이 주어져 있습니당!",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this,"SMS 권한이 없습니당!",Toast.LENGTH_SHORT).show();
+            //권한이 없는 경우이므로 권한을 부여하도록 하겠음.
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.RECEIVE_SMS)){
+                Toast.makeText(this,"권한 설명이 필요합니당!",Toast.LENGTH_SHORT).show();
+            }else{
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECEIVE_SMS},1);
+                //권한을 부여해 달라고 시스템에 요청하는 것임.
+            }
+        }
+    }
+
+    //시스템이 권한을 받은 것을 알기 위하여 Call-Back 함수를 사용함. Generate>Override Methods.
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 1:
+                if(grantResults.length>0){
+                    if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                        //사용자가 권한을 허용한 경우임.
+                        Toast.makeText(this,"SMS 승인 권한을 사용자가 허용하였습니당!",Toast.LENGTH_SHORT).show();
+                    }else if(grantResults[0]==PackageManager.PERMISSION_DENIED){
+                        Toast.makeText(this,"SMS 승인 권한을 사용자가 거부하였습니당ㅠ!", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(this,"승인 권한을 부여받지 못했습니당ㅠ!", Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+}
+```
