@@ -1,0 +1,65 @@
+# 4. 화면 내비게이션 - 1. 프래그먼트 이해하기 - 1) 프래그먼트 만들기
+1. 한 화면에 여러 부분화면을 넣는 방식
+- 태블릿과 같이 큰 화면에서는 한 화면에 여러 부분화면을 넣는 것이 효율적임
+2. 부분화면을 독립적으로 만들기(프래그먼트)
+- 프래그먼트는 부분화면을 독립적으로 만들어주며 액티비티를 그대로 본떠 만든 것임
+-  프래그먼트도 인텐트 처럼 프래그먼트 매니저에 요청하여 메소드를 요청해야함.
+3. 프래그먼트를 이용해 화면 전환하기
+- 하나의 액티비티에 하나의 프래그먼트를 전체 화면으로 보여주면 시스템과 관계없이 전체 화면을 전환하는 효과를 만들 수 있음.
+4. 프래그먼트를 화면에 추가하기
+- 프래그먼트는 액티비티 위에 올라가야 프래그먼트로 동작함
+- 인플레이션을 위한 별도의 콜백 메소드를 제공함 
+5. java파일과 xml 파일 만들어서 인플레이션하여 연결하기
+- MainFragment.java
+```java
+package com.example.myfragment;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class MainFragment extends Fragment {
+    //Generate > Overrride Methods > onCreateView
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main,container,false);
+        return rootView;//인플래이션한 rootView 를 리턴해주면 Fragment 의 화면으로 보이게 됨, rootView 는 프래그먼트 안에 들어가는 최상위 레이아웃
+    }
+}
+```
+6.activity_main.xml에 fragment 추가
+```
+java
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="시작"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button">
+        <fragment
+            android:id="@+id/main_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.example.myfragment.MainFragment"/>
+    </FrameLayout>
+</RelativeLayout>
+```
+7.
+8. 
+9. 
