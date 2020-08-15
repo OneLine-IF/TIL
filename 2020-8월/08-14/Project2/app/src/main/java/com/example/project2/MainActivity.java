@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.ListView);
+
+
         Button all = (Button)findViewById(R.id.all);
         all.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList list = new ArrayList();
         list.add(listView);
 
-        reViewitem data = new reViewitem("key");
+        reViewitem data = new reViewitem("simple");
         intent2.putExtra("data",data);
 
         intent2.putParcelableArrayListExtra("key", adapter.items);

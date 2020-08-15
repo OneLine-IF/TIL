@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RatingBar;
+
+import java.util.List;
 
 public class CommentWriteActivity extends AppCompatActivity {
 RatingBar ratingBar4;
 EditText contentsInput;
 MainActivity.ReViewAdapter adapter;
+ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +25,7 @@ MainActivity.ReViewAdapter adapter;
 
         ratingBar4 = (RatingBar)findViewById(R.id.ratingBar4);
         contentsInput = (EditText)findViewById(R.id.contentInput);
+
 
         Button s_button = (Button)findViewById(R.id.Save);
         Button b_button = (Button)findViewById(R.id.Back);
