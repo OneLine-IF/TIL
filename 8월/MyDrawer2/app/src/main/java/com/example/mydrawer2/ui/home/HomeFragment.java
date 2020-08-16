@@ -1,5 +1,6 @@
 package com.example.mydrawer2.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,27 +10,95 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
+import com.example.mydrawer2.Fragment1;
+import com.example.mydrawer2.Fragment2;
+import com.example.mydrawer2.Fragment3;
+import com.example.mydrawer2.Fragment4;
+import com.example.mydrawer2.Fragment5;
+import com.example.mydrawer2.Fragment6;
+import com.example.mydrawer2.MainActivity;
 import com.example.mydrawer2.R;
 
+import java.util.ArrayList;
+
 public class HomeFragment extends Fragment {
+    ViewPager pager;
+    MainActivity activity;
 
-    private HomeViewModel homeViewModel;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+        activity = (MainActivity) getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        activity = null;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
+
+        pager = (ViewPager) rootView.findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(6);// 캐슁하는 것이 6개까지 늘어남
+
+        MoviePagerAdapter adapter = new MoviePagerAdapter(activity.getSupportFragmentManager());
+
+        Fragment1 fragment1 = new Fragment1();
+        adapter.addItem(fragment1);
+
+        Fragment2 fragment2 = new Fragment2();
+        adapter.addItem(fragment2);
+
+        Fragment3 fragment3 = new Fragment3();
+        adapter.addItem(fragment3);
+
+        Fragment4 fragment4 = new Fragment4();
+        adapter.addItem(fragment4);
+
+        Fragment5 fragment5 = new Fragment5();
+        adapter.addItem(fragment5);
+
+        Fragment6 fragment6 = new Fragment6();
+        adapter.addItem(fragment6);
+
+        pager.setAdapter(adapter);
+
+        return rootView;
+    }
+
+    class MoviePagerAdapter extends FragmentStatePagerAdapter {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
+
+        public MoviePagerAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        public void addItem(Fragment item) {
+            items.add(item);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+
     }
 }
