@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.ViewParent;
 import android.widget.Toast;
 
+import com.example.mydrawer2.ui.gallery.GalleryFragment;
+import com.example.mydrawer2.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -27,10 +29,20 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     NavController navController;
 
+    HomeFragment homeFragment;
+    GalleryFragment galleryFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        homeFragment = new HomeFragment();
+        galleryFragment = new GalleryFragment();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.container, homeFragment).commit();
+
+        /////////////////////////////////////////////
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
                 // 이벤트 처리
                 int id = item.getItemId();
                 if(id == R.id.nav_home) {
-                    Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
                 } else if(id == R.id.nav_gallery) {
-                    Toast.makeText(MainActivity.this, "gallery", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "gallery", Toast.LENGTH_SHORT).show();
                 } else if(id == R.id.nav_slideshow) {
-                    Toast.makeText(MainActivity.this, "slideshow", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "slideshow", Toast.LENGTH_SHORT).show();
                 }
 
                 // 아래의 코드는 네비게이션을 다루기 위해 필요
@@ -98,5 +110,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public void onFragmentChange(int index) {
+        if (index == 0) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+        } else if (index == 1) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, galleryFragment).commit();
+        }
     }
 }
