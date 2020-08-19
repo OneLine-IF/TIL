@@ -3,6 +3,7 @@ package com.example.detailpart;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -22,12 +24,24 @@ public class MainActivity extends AppCompatActivity {
     PagerFragment pagerFragment;
     DetailFragment detailFragment;
 
+    TextView toolbarText;
+
+    int curIndex;// 네비게이션 호출과 버튼 호출 코드의 중복을 방지하기 위한 전역 변수
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        pagerFragment = new PagerFragment();
+        detailFragment = new DetailFragment();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.container, pagerFragment).commit();
+        curIndex = 0;
+
+        toolbarText = (TextView) findViewById(R.id.toolbar_title);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -47,29 +61,25 @@ public class MainActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
                 String title = menuItem.getTitle().toString();
 
-                if(id == R.id.account){
-                    Toast.makeText(context, title + ": 계정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
+                if(id == R.id.account && curIndex != 0){
+                    toolbarText.setText("영화 목록");
+                    Toast.makeText(context, "영화 목록", Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().beginTransaction().add(R.id.container, pagerFragment).commit();
+                    curIndex = 0;
                 }
                 else if(id == R.id.setting){
-                    Toast.makeText(context, title + ": 설정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,  "영화 API", Toast.LENGTH_SHORT).show();
                 }
                 else if(id == R.id.logout){
-                    Toast.makeText(context, title + ": 로그아웃 시도중", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,  "예매하기", Toast.LENGTH_SHORT).show();
                 }
 
                 return true;
             }
         });
 
-        /////////////////////////////////////
-
-        pagerFragment = new PagerFragment();
-        detailFragment = new DetailFragment();
-
-        getSupportFragmentManager().beginTransaction().add(R.id.container, pagerFragment).commit();
-
     }
-    //바로가기 메뉴 툴바 관련 메서드
+    // 바로가기 메뉴 툴바 관련 메서드
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -86,9 +96,15 @@ public class MainActivity extends AppCompatActivity {
     // 프래그먼트 교체를 위한 메서드
     public void onFragmentChange(int index) {
         if (index == 0) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,pagerFragment).commit();
+            toolbarText.setText("영화 목록");
+            getSupportFragmentManager().beginTransaction().add(R.id.container, pagerFragment).commit();
+            curIndex = 0;
         } else if (index == 1) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,detailFragment).commit();
+            toolbarText.setText("영화 상세");
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.container,detailFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            curIndex = 1;
         }
     }
 }

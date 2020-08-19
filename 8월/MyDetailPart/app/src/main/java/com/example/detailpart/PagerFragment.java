@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -44,7 +46,8 @@ public class PagerFragment extends Fragment {
         pager = (ViewPager) rootView.findViewById(R.id.pager);
         pager.setOffscreenPageLimit(6);// 캐슁하는 것이 6개까지 늘어남
 
-        MoviePagerAdapter adapter = new MoviePagerAdapter(activity.getSupportFragmentManager());
+        MoviePagerAdapter adapter = new MoviePagerAdapter(getChildFragmentManager());
+        // pager.setAdapter(adapter); -> 없어도 실행됨 (공부 필요)
 
         Fragment1 fragment1 = new Fragment1();
         adapter.addItem(fragment1);
@@ -68,8 +71,8 @@ public class PagerFragment extends Fragment {
 
         return rootView;
     }
-
-    class MoviePagerAdapter extends FragmentStatePagerAdapter {
+    // FragmentStatePagerAdapter 대신 FragmentPagerAdapter 사용하니 정상 실행됨 (공부 필요)
+    class MoviePagerAdapter extends FragmentPagerAdapter {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
 
         public MoviePagerAdapter(@NonNull FragmentManager fm) {

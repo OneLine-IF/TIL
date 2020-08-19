@@ -24,13 +24,13 @@ public class CommentReadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 액션바 객체를 받고 이름을 변경하기 위한 코드
-        /*
-        ActionBar actionBar = getSupportActionBar();
+
+        //ActionBar actionBar = getSupportActionBar();
         setContentView(R.layout.activity_comment_read);
-        actionBar.setDisplayHomeAsUpEnabled(true);// 상단의 액션바에 뒤로가기 버튼이 보여지도록 함
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setTitle("한줄평 목록");
-        */
+        //actionBar.setDisplayHomeAsUpEnabled(true);// 상단의 액션바에 뒤로가기 버튼이 보여지도록 함
+        //actionBar.setDisplayShowTitleEnabled(false);
+        //actionBar.setTitle("한줄평 목록");
+
 
 
         ListView listView = (ListView) findViewById(R.id.listView);
@@ -78,7 +78,7 @@ public class CommentReadActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 //NavUtils.navigateUpFromSameTask(this); -> 현재 Activity는 종료되면서 stack 상단에 있는 녀석이 호출.
-                // 그러므로 위 코드가 있으면 아래의 finis(); 코드가 실행되지 않아 메인에서 onActivityResult 메서드로 받아주지 못한다.
+                // 그러므로 위 코드가 있으면 아래의 finish(); 코드가 실행되지 않아 메인에서 onActivityResult 메서드로 받아주지 못한다.
                 Intent intent = new Intent();// 인텐트를 만들어
                 intent.putExtra("newItems", newItems);// 새로 추가된 정보를 담은 ArrayList를 이전 액티비티로 보냄
                 setResult(RESULT_OK, intent);

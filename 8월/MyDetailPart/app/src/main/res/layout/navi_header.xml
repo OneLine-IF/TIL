@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="176dp"
-    android:background="@drawable/ic_launcher_background"
+    android:background="@drawable/menu_background"
     android:paddingBottom="16dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
@@ -14,24 +14,26 @@
     android:gravity="bottom">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        app:srcCompat="@mipmap/ic_launcher_round"
+        android:id="@+id/imageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:contentDescription="Navigation header"
-        android:id="@+id/imageView"/>
+        android:paddingTop="8dp"
+        android:src="@drawable/profile" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="Mike"
+        android:textSize="20dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="mike.jung.global@gmail.com"
+        android:textSize="17dp"
         android:id="@+id/textView"/>
 
 </LinearLayout>
