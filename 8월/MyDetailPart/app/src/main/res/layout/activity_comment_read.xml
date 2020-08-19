@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:layout_marginVertical="10dp"
-            android:textColor="@android:color/darker_gray"
             android:text="반도"
             android:textSize="27dp"
             android:textStyle="bold" />
@@ -76,7 +75,6 @@
                 android:layout_marginVertical="5dp"
                 android:layout_marginHorizontal="5dp"
                 android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"
                 android:textSize="20dp"
                 android:text="8.2 (1,142명 참여)"
                 />

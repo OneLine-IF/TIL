@@ -37,8 +37,6 @@ public class Fragment1 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1, container, false);
 
-        Toast.makeText(this.activity, "실행됨", Toast.LENGTH_SHORT).show();
-
         Button button = (Button) rootView.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
