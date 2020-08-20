@@ -1,0 +1,232 @@
+# 4. 화면 내비게이션 - 3. 액션바 사용하기 - 1) 액션바 구성하기
+1. res에서 menu 라는 새로운 파일생성 > menu에서 새로운 리소스 파일 생성 
+2. 내가 추가하는 각각의 item이 하나의 메뉴가 됨.
+- 메뉴를 위한 xml , menu_main.xml
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="새로고침"
+        android:icon="@drawable/menu_refresh"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_search"
+        android:title="검색"
+        android:icon="@drawable/menu_search"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:title="설정"
+        android:icon="@drawable/menu_settings"
+        app:showAsAction="always"/>
+</menu>
+```
+3. MainActivity.java
+```java
+package com.example.optionmenu;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Menu;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }//이렇게 하면 메뉴가 화면에 보이게 됨.
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //메뉴를 MainActivity 에 붙여줘야함, Generate > Override Methods
+
+
+
+    }
+}
+```
+4. 버튼 클릭시 작동하도록 하는 MainActivity.java에서의 코드
+```java
+package com.example.optionmenu;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }//이렇게 하면 메뉴가 화면에 보이게 됨.
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //메뉴를 MainActivity 에 붙여줘야함, Generate > Override Methods
+
+
+
+    }
+
+
+    //Generate > Override Methods > onOptionsItemSelected (메뉴 아이템이 클릭됐을 때 호출되는 메서드)
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int curId = item.getItemId();
+        switch (curId){
+            case R.id.menu_refresh:
+                Toast.makeText(this, "메뉴클릭됨" ,Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_search:
+                Toast.makeText(this, "검색메뉴클릭됨" ,Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_settings:
+                Toast.makeText(this, "설정메뉴클릭됨" ,Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}
+```
+5. 상단에 있는 파란색은 기본으로 설정된 것
+- app > res > values > styles.xml 에서 상단바를 없앨 수 있음
+```java
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+</resources>
+```
+6. 액션바를 보이거나 보이지 않게 하는 방법
+- MainActivity.java
+```java
+package com.example.optionmenu;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }//이렇게 하면 메뉴가 화면에 보이게 됨.
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ActionBar abar = getSupportActionBar();
+        abar.hide();//액션바의 스타일이 No 가 아니더라도 액션바가 안보이게 됨.
+
+
+
+        //메뉴를 MainActivity 에 붙여줘야함, Generate > Override Methods >onCreateOptionsMenu > 위에 뜸.
+
+
+
+    }
+
+
+    //Generate > Override Methods > onOptionsItemSelected (메뉴 아이템이 클릭됐을 때 호출되는 메서드)
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int curId = item.getItemId();
+        switch (curId){
+            case R.id.menu_refresh:
+                Toast.makeText(this, "메뉴클릭됨" ,Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_search:
+                Toast.makeText(this, "검색메뉴클릭됨" ,Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_settings:
+                Toast.makeText(this, "설정메뉴클릭됨" ,Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}
+```
+7. 액션바 안에 레이아웃 보이기
+- search_layout.xml 에 디자인 만들기
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="검색"
+        android:textColor="#9779CD"
+        android:textSize="16dp" />
+    <EditText
+        android:id="@+id/edit_text"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"/>
+
+</LinearLayout>
+```
+- meny_main.xml 에 추가
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="새로고침"
+        android:icon="@drawable/menu_refresh"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_search"
+        android:title="검색"
+        android:icon="@drawable/menu_search"
+        app:showAsAction="always|withText"
+        app:actionLayout="@layout/search_layout"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:title="설정"
+        android:icon="@drawable/menu_settings"
+        app:showAsAction="always"/>
+</menu>
+```
+(MainActivity.java 에서 액션바 가리는 거 없애기)
