@@ -1,0 +1,182 @@
+# 4. 화면 내비게이션 - 4. 탭 사용하기 - 1) 탭 만들기
+1. 탭을 쓸 때는 프래그먼트를 쓰는 것이 일반적임.
+- 액션바를 안보이게 한 뒤 > File > Project Structure > app > dependencies > +버튼 > Library dependencies > design(외부라이브러리)
+- activity_main.xml 안에다가 상단의 액션바에 대한 xml 레이아웃을직접 넣도록, 같이 들어가 있도록 구성하기
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:elevation="1dp"
+        android:id="@+id/toolbar">
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:background="@android:color/background_light"
+        app:tapMode="fixed"
+        app:tabGravity="fill"
+        app:tabTextColor="@color/colorPrimary"
+        app:tabSelectedTextColor="@color/colorAccent">
+    </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:id="@+id/container"></FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+  </RelativeLayout>
+```
+2. 프래그먼트 만들기
+- res > layout > xml레이아웃 파일 생성 > 탭 버튼을 눌렀을 때 나올 첫 번째 부분화면이 될 거임.
+-  세 개의 xml을 프래그먼트를 위한 xml 복사하기 붙어넣기 하며 만들어 놓기
+- 새로운 java class 파일 만들기
+```java
+package com.example.tab;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class Fragment1 extends Fragment {
+    //Generate > overrideMethods > onCreateView
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1,container,false);
+
+        return rootView;
+
+    }
+}
+```
+- 위의 java 파일을 프래그먼트 3개를 만들기 위하여 복사하기 붙여넣기 하기.
+- MainActivity.java
+```java
+package com.example.tab;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.Toolbar;
+
+public class MainActivity extends AppCompatActivity {
+    Fragment1 fragment1;
+    Fragment2 fragment2;
+    Fragment3 fragment3;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        fragment1 = new Fragment1();
+        fragment2 = new Fragment2();
+        fragment3 = new Fragment3();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.container,fragment1).commit();
+    }
+}
+```
+3. 탭 버튼을 클릭했을 때 우리가 만든 프래그먼트가 바뀌면서 보여지도록 하기 
+- 탭 버튼 추가 후 탭 기능 구성
+```java
+package com.example.tab;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.Toolbar;
+
+import com.google.android.material.tabs.TabLayout;
+
+public class MainActivity extends AppCompatActivity {
+    Fragment1 fragment1;
+    Fragment2 fragment2;
+    Fragment3 fragment3;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        fragment1 = new Fragment1();
+        fragment2 = new Fragment2();
+        fragment3 = new Fragment3();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.container,fragment1).commit();
+
+        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        tabs.addTab(tabs.newTab().setText("친구"));//addTab 하면 탭 버튼 추가 가능.
+        tabs.addTab(tabs.newTab().setText("일대일 채팅"));
+        tabs.addTab(tabs.newTab().setText("기타"));
+        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();//몇 번째 탭인지 index 가 넘어옴
+                Fragment selected = null;
+                if(position==0){
+                    selected = fragment1;
+                }else if(position==1){
+                    selected = fragment2;
+                }else if(position==3){
+                    selected = fragment3;
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,selected).commit();//화면에 보여주는 거
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+}
+```
