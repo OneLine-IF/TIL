@@ -1,0 +1,182 @@
+# 4. 화면 내비게이션 - 6. 바로가기 메뉴 만들기 - 1) 바로가기 메뉴 만들기
+1. Navigation Drawer로 설정
+- DrawerLayout 은 다른 레이아웃이나 다른 뷰를 담을 수 있는 레이아웃에 하나.
+- include는 다른 xml레이아웃을 포함시키는 역할을 함.
+- content_main 이 화면 전체를 채우고 있음.
+- app_bar_main.xml 이 상단의 액션바 부분을 담당.
+- activity_main.xml 에서는 바로가기 메뉴를 위한 것이 들어감. 
+2. activity_main.xml 에 app_bar_main.xml 과 content_main.xml을 복사해서 모아넣기 한 후 삭제.
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+        
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        </FrameLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
+</androidx.drawerlayout.widget.DrawerLayout>
+```
+3. activity_main_drawer.xml
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_0"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="첫 번째 화면" />
+        <item
+            android:id="@+id/nav_1"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="두 번째 화면" />
+        <item
+            android:id="@+id/nav_2"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="세 번째 화면" />
+    </group>
+</menu>
+```
+4. layout 폴더 프래그먼트 3개 만들어놨던거 복붙하기.
+5. MainActivity.java
+```java
+package com.example.drawer2;
+
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Menu;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , FragmentCallBack {
+    Fragment1 fragment1;
+    Fragment2 fragment2;
+    Fragment3 fragment3;
+    Toolbar toolbar;
+
+    private AppBarConfiguration mAppBarConfiguration;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_0, R.id.nav_1, R.id.nav_2)
+                .setDrawerLayout(drawer)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+
+        fragment1 = new Fragment1();
+        fragment2 = new Fragment2();
+        fragment3 = new Fragment3();
+        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment1).commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onFragmentSelected(int position, Bundle bundle) {
+        Fragment curFragment = null;
+        if(position == 0){
+            curFragment = fragment1;
+            toolbar.setTitle("첫 번째 화면");
+        } else if(position == 1){
+            curFragment = fragment2;
+            toolbar.setTitle("두 번째 화면");
+        } else if(position == 2){
+            curFragment = fragment3;
+            toolbar.setTitle("세 번째 화면");
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, curFragment).commit();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+}
+```
