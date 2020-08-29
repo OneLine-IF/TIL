@@ -18,7 +18,16 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.detailpart.data.MovieInfo;
+import com.example.detailpart.data.MovieList;
+import com.example.detailpart.data.Responseinfo;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -33,10 +42,18 @@ public class MainActivity extends AppCompatActivity {
 
     ViewPager pager;
 
+    MovieList movieList;
+
+    MoviePagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 영화 목록 데이터를 요청 -> requestMovieList 메서드가 아래의 코드보다 위에 있으면 에러 발생
+        AppHelper.requestQueue = Volley.newRequestQueue(getApplicationContext());// 이 코드가 requestMovieList 메서드보다 먼저 실행되어야 함
+        requestMoveList();
 
         detailFragment = new DetailFragment();
 
@@ -83,34 +100,69 @@ public class MainActivity extends AppCompatActivity {
 
         // 뷰페이저를 메인 액티비티에서 구현
         pager = (ViewPager) findViewById(R.id.pager);
-        pager.setOffscreenPageLimit(6);// 최대 캐슁 개수 = 6
+        pager.setOffscreenPageLimit(5);// 최대 캐슁 개수 = 5
 
         pager.setClipToPadding(false);
         pager.setPadding(100,0,100,0);
 
-        MoviePagerAdapter adapter = new MoviePagerAdapter(getSupportFragmentManager());
+        adapter = new MoviePagerAdapter(getSupportFragmentManager());
 
-        // 어뎁터에 아이템 추가
-        Fragment1 fragment1 = new Fragment1();
-        adapter.addItem(fragment1);
+    }
 
-        Fragment2 fragment2 = new Fragment2();
-        adapter.addItem(fragment2);
+    // 데이터를 요청하고 응답을 받는 메서드(volley, gson 라이브러리를 gradle에 추가)
+    public void requestMoveList() {
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
+        url += "?" + "type=1";
 
-        Fragment3 fragment3 = new Fragment3();
-        adapter.addItem(fragment3);
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Gson을 이용해 응답을 자바 객체로 바꾸는 메서드 호출
+                        processResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(),"에러 발생", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
-        Fragment4 fragment4 = new Fragment4();
-        adapter.addItem(fragment4);
+        // 영화 목록에서 요청 보냄
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+    }
 
-        Fragment5 fragment5 = new Fragment5();
-        adapter.addItem(fragment5);
+    // 받은 응답을 Gson을 이용해 변환해주는 메서드
+    public void processResponse(String response) {
+        Gson gson = new Gson();
 
-        Fragment6 fragment6 = new Fragment6();
-        adapter.addItem(fragment6);
+        Responseinfo info = gson.fromJson(response, Responseinfo.class);
+        // 응답이 정상인지 확인
+        if(info.code == 200){
+            // 아까 Responseinfo에서 파싱해주지 않았던 것을 파싱
+            movieList = gson.fromJson(response, MovieList.class);
 
-        pager.setAdapter(adapter);// 어뎁터의 내용물이 뷰페이저에 보이도록 설정
+            Toast.makeText(getApplicationContext(),"영화 개수 : " + movieList.result.size() ,Toast.LENGTH_SHORT).show();
 
+            for (int i=0; i<movieList.result.size(); i++) {
+                Fragment1 fragment1 = new Fragment1();
+
+                // 번들에 인덱스값을 담아서 프래그먼트로 전달
+                Bundle bundle = new Bundle(1);
+                bundle.putInt("index", i);
+                fragment1.setArguments(bundle);
+
+                adapter.addItem(fragment1);
+            }
+
+            pager.setAdapter(adapter);// 정보가 담긴 어뎁터를 뷰페이저에 장착
+
+        }
     }
 
     // 좌측 상단 햄버거 아이콘이 눌리면 드로어 레이아웃을 보여주도록 함
