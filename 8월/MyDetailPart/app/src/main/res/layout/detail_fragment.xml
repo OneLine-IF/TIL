@@ -20,11 +20,12 @@
             android:background="@drawable/thumbnail_base">
 
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="150dp"
                 android:layout_height="200dp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="10dp"
-                android:src="@drawable/image11"/>
+                android:src="@drawable/image11" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -40,6 +41,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="10dp"
@@ -58,18 +60,20 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/date"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="2020.07.15 개봉"
-                    android:textSize="20dp"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/genreDuration"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="액션, 드라마 / 116분"
-                    android:textSize="20dp"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -145,14 +149,14 @@
                     android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/reservation_gradeRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
                     android:layout_marginBottom="10dp"
+                    android:gravity="center_horizontal"
                     android:text="1위 40.4%"
-                    android:textStyle="bold"
                     android:textSize="17dp"
-                    />
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -183,7 +187,7 @@
                         android:id="@+id/ratingBar"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginVertical="7dp"
+                        android:layout_marginVertical="5dp"
                         style="?android:attr/ratingBarStyleSmall"
                         android:numStars="5"
                         android:stepSize="0.1"
@@ -191,14 +195,14 @@
                         />
 
                     <TextView
+                        android:id="@+id/audience_rating"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="2dp"
                         android:gravity="center_horizontal"
-                        android:textStyle="bold"
-                        android:textSize="17dp"
                         android:text="8.2"
-                        />
+                        android:textSize="17dp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -224,13 +228,13 @@
                     />
 
                 <TextView
+                    android:id="@+id/audience"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="2,392,868명"
-                    android:textStyle="bold"
                     android:textSize="17dp"
-                    />
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -255,14 +259,14 @@
                 />
 
             <TextView
+                android:id="@+id/synopsis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:text="부산행의 반도 못함"
-                android:textSize="15dp"
-                />
+                android:textSize="15dp" />
 
         </LinearLayout>
 
@@ -298,6 +302,7 @@
                     android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/director"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -322,6 +327,7 @@
                     android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/actor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
