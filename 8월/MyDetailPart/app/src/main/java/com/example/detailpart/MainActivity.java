@@ -29,6 +29,7 @@ import com.example.detailpart.data.Responseinfo;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -42,22 +43,35 @@ public class MainActivity extends AppCompatActivity {
 
     ViewPager pager;
 
-    MovieList movieList;
+    //MovieList movieList;
 
     MoviePagerAdapter adapter;
+
+    ArrayList<DetailFragment> details = new ArrayList<DetailFragment>();// 각 영화별 상세화면 정보를 담아놓음
+
+    int fragIndex = 0;// 뷰페이저의 현재 조각(사용자가 보고 있는)의 인덱스값을 저장
+
+    String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
+
+    ArrayList<MovieInfo> movies = new ArrayList<MovieInfo>();
+
+    int tmp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 영화 목록 데이터를 요청 -> requestMovieList 메서드가 아래의 코드보다 위에 있으면 에러 발생
-        AppHelper.requestQueue = Volley.newRequestQueue(getApplicationContext());// 이 코드가 requestMovieList 메서드보다 먼저 실행되어야 함
-        requestMoveList();
-
         detailFragment = new DetailFragment();
 
         toolbarText = (TextView) findViewById(R.id.toolbar_title);
+
+        url += "?" + "id=";
+        // 영화 목록 데이터를 요청 -> requestMovieList 메서드가 아래의 코드보다 위에 있으면 에러 발생
+        AppHelper.requestQueue = Volley.newRequestQueue(getApplicationContext());// 이 코드가 requestMovieList 메서드보다 먼저 실행되어야 함
+        for(int i=1; i<=5; i++) {
+            requestMoveList(i);
+        }
 
         // 툴바 관련 메서드
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -85,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     toolbarText.setText("영화 목록");
                     Toast.makeText(context, "영화 목록", Toast.LENGTH_SHORT).show();
                     // 상세 화면에서 바로가기 메뉴의 "영화 목록"을 눌렀을 때, 영화 상세 화면을 제거
-                    getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
+                    getSupportFragmentManager().beginTransaction().remove(details.get(fragIndex)).commit();
                 }
                 else if(id == R.id.setting){
                     Toast.makeText(context,  "영화 API", Toast.LENGTH_SHORT).show();
@@ -107,16 +121,38 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new MoviePagerAdapter(getSupportFragmentManager());
 
+        // 현재 사용자가 어떤 조각을 보고 있는지 그 프래그먼트 조각의 인덱스를 얻기 위함
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                fragIndex = position;
+                Toast.makeText(getApplicationContext(),"현재 조각 : " + position,Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
     }
 
     // 데이터를 요청하고 응답을 받는 메서드(volley, gson 라이브러리를 gradle에 추가)
-    public void requestMoveList() {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
-        url += "?" + "type=1";
+    public void requestMoveList(int i) {
+        // 영화 목록 화면 웹 url
+        //StringBuilder url = new StringBuilder("http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList");
+        //url.append("?" + "type=1");
+
+        String urlstr = url + i;
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,
-                url,
+                urlstr,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -145,25 +181,67 @@ public class MainActivity extends AppCompatActivity {
         // 응답이 정상인지 확인
         if(info.code == 200){
             // 아까 Responseinfo에서 파싱해주지 않았던 것을 파싱
+            MovieList movieList = gson.fromJson(response, MovieList.class);
+
+            MovieInfo movieInfo = movieList.result.get(0);
+
+            movies.add(movieInfo);
+
+            //Toast.makeText(getApplicationContext(),"영화 개수 : " + movieList.result.size() ,Toast.LENGTH_SHORT).show();
+
+            // 영화 목록
+            Fragment1 fragment1 = new Fragment1();
+
+            // 번들에 인덱스값을 담아서 영화 목록 프래그먼트로 전달
+            Bundle bundle = new Bundle(1);
+            bundle.putInt("index", tmp);
+            fragment1.setArguments(bundle);
+
+            adapter.addItem(fragment1);
+
+            pager.setAdapter(adapter);// 정보가 담긴 어뎁터를 뷰페이저에 장착
+
+            // 영화 상세
+            DetailFragment detailFragment = new DetailFragment();
+
+            // 번들에 인덱스값을 담아서 영화 상세 프래그먼트로 전달
+            Bundle bundle2 = new Bundle(1);
+            bundle2.putInt("index2", tmp);
+            detailFragment.setArguments(bundle2);
+
+            details.add(detailFragment);
+
+            tmp = tmp+1;
+        }
+    }
+    /*
+    public void processResponse2(String response) {
+        Gson gson = new Gson();
+
+        Responseinfo info2 = gson.fromJson(response, Responseinfo.class);
+        // 응답이 정상인지 확인
+        if(info2.code == 200){
+            // 아까 Responseinfo에서 파싱해주지 않았던 것을 파싱 -> 이부분 변경
             movieList = gson.fromJson(response, MovieList.class);
 
             Toast.makeText(getApplicationContext(),"영화 개수 : " + movieList.result.size() ,Toast.LENGTH_SHORT).show();
 
-            for (int i=0; i<movieList.result.size(); i++) {
-                Fragment1 fragment1 = new Fragment1();
+            for (int i=0; i<5; i++) {
+                // 영화 상세
+                DetailFragment detailFragment = new DetailFragment();
 
-                // 번들에 인덱스값을 담아서 프래그먼트로 전달
-                Bundle bundle = new Bundle(1);
-                bundle.putInt("index", i);
-                fragment1.setArguments(bundle);
+                // 번들에 인덱스값을 담아서 영화 상세 프래그먼트로 전달
+                Bundle bundle2 = new Bundle(1);
+                bundle2.putInt("index2", i);
+                detailFragment.setArguments(bundle2);
 
-                adapter.addItem(fragment1);
+                details.add(i, detailFragment);
+
             }
-
-            pager.setAdapter(adapter);// 정보가 담긴 어뎁터를 뷰페이저에 장착
 
         }
     }
+    */
 
     // 좌측 상단 햄버거 아이콘이 눌리면 드로어 레이아웃을 보여주도록 함
     @Override
@@ -180,13 +258,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 프래그먼트 교체를 위한 메서드
-    public void onFragmentChange(int index) {
-        if (index == 0) {
+    public void onFragmentChange(int option) {
+        if (option == 0) {
             toolbarText.setText("영화 목록");
-            getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
-        } else if (index == 1) {
+            getSupportFragmentManager().beginTransaction().remove(details.get(fragIndex)).commit();
+        } else if (option == 1) {
             toolbarText.setText("영화 상세");
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.container, details.get(fragIndex));
             transaction.addToBackStack(null);
             transaction.commit();
         }

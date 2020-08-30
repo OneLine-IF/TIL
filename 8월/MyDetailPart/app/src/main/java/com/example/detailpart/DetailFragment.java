@@ -12,19 +12,14 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
+import com.example.detailpart.data.MovieInfo;
+
 import java.util.ArrayList;
-
-import static androidx.fragment.app.FragmentManager.*;
 
 public class DetailFragment extends Fragment {
     MainActivity activity;
@@ -44,6 +39,23 @@ public class DetailFragment extends Fragment {
     int dislikeCount = 1;
     boolean likeState = false;
     boolean dislikeState = false;
+
+    int index;
+
+    TextView title;
+    TextView date;
+
+    TextView audience_rating;
+
+    TextView reservation_gradeRate;
+    int grade;
+
+    TextView genreDuration;
+    TextView audience;
+    TextView synopsis;
+    TextView director;
+    TextView actor;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -151,6 +163,41 @@ public class DetailFragment extends Fragment {
                 startActivityForResult(intent, 102);
             }
         });
+
+        // 액티비티에서 번들에 담아 보내준 인덱스값 받기
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            index = bundle.getInt("index2");
+        }
+
+        MovieInfo movieInfo = activity.movies.get(index);
+
+        // 상세 화면 꾸미기
+        title = (TextView)rootView.findViewById(R.id.title);
+        int grade;
+        date = (TextView)rootView.findViewById(R.id.date);
+        genreDuration = (TextView)rootView.findViewById(R.id.genreDuration);
+        // -> 여기 좋아요 싫어요 버튼 순서
+        reservation_gradeRate = (TextView)rootView.findViewById(R.id.reservation_gradeRate);
+        audience_rating = (TextView)rootView.findViewById(R.id.audience_rating);
+        audience = (TextView)rootView.findViewById(R.id.audience);
+        synopsis = (TextView)rootView.findViewById(R.id.synopsis);
+        director = (TextView)rootView.findViewById(R.id.director);
+        actor = (TextView)rootView.findViewById(R.id.actor);
+
+        title.setText(movieInfo.title);
+        date.setText(movieInfo.date + " 개봉");
+        genreDuration.setText(movieInfo.genre + " / " + movieInfo.duration + "분");
+        reservation_gradeRate.setText(movieInfo.reservation_grade + "위 " + movieInfo.reservation_rate + "%");
+        audience_rating.setText("" + movieInfo.audience_rating);
+        audience.setText(movieInfo.audience + "명");
+        synopsis.setText(movieInfo.synopsis);
+        director.setText(movieInfo.director);
+        actor.setText(movieInfo.actor);
+
+
+        // ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 좋아요, 싫어요, 레이팅바 설정 + 모두보기, 작성하기
+
 
         return rootView;
     }

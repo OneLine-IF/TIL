@@ -1,7 +1,6 @@
 package com.example.detailpart;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.detailpart.data.MovieInfo;
-
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 
 public class Fragment1 extends Fragment {
     MainActivity activity;
@@ -50,17 +45,9 @@ public class Fragment1 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1, container, false);
 
-        Button button = (Button) rootView.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activity.onFragmentChange(1);
-            }
-        });
-
         title = (TextView)rootView.findViewById(R.id.title);
         imageView = (ImageView)rootView.findViewById(R.id.imageView);
-        reservation_rate = (TextView)rootView.findViewById(R.id.reservation_rate);
+        reservation_rate = (TextView)rootView.findViewById(R.id.reservation_gradeRate);
         grade = (TextView)rootView.findViewById(R.id.grade);
         date = (TextView)rootView.findViewById(R.id.date);
 
@@ -70,8 +57,16 @@ public class Fragment1 extends Fragment {
             index = bundle.getInt("index");
         }
 
+        Button button = (Button) rootView.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.onFragmentChange(1);// 액티비티의 메서드를 호출하여 상세 화면 프래그먼트 얹기
+            }
+        });
+
         // 해당 인덱스값의 데이터를 movieInfo에 삽입하여 활용
-        MovieInfo movieInfo = activity.movieList.result.get(index);
+        MovieInfo movieInfo = activity.movies.get(index);
 
         String urlStr = movieInfo.image;
         sendImageRequest(urlStr);
