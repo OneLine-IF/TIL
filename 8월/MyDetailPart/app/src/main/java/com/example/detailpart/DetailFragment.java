@@ -17,11 +17,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+
+import static androidx.fragment.app.FragmentManager.*;
 
 public class DetailFragment extends Fragment {
     MainActivity activity;
@@ -52,7 +55,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
+        activity.toolbarText.setText("영화 목록");
         activity = null;
     }
 
