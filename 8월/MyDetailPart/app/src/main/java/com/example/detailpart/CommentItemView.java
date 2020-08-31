@@ -15,6 +15,7 @@ public class CommentItemView extends LinearLayout {
     TextView textView;
     TextView textView2;
     TextView textView3;
+    TextView textView4;
     ImageView imageView;
     RatingBar ratingBar;
 
@@ -37,6 +38,7 @@ public class CommentItemView extends LinearLayout {
         textView = (TextView) findViewById(R.id.textView);
         textView2 = (TextView) findViewById(R.id.textView2);
         textView3 = (TextView) findViewById(R.id.textView3);
+        textView4 = (TextView) findViewById(R.id.textView4);
         imageView = (ImageView) findViewById(R.id.imageView);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
     }
@@ -50,6 +52,8 @@ public class CommentItemView extends LinearLayout {
     }
 
     public void setComment(String Comment){ textView3.setText(Comment); }
+
+    public void setRecommend(int Recommend){ textView4.setText(String.valueOf(Recommend)); }
 
     public void setImage(int resId){
         imageView.setImageResource(resId);

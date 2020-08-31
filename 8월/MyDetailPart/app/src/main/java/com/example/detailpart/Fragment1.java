@@ -68,8 +68,7 @@ public class Fragment1 extends Fragment {
         // 해당 인덱스값의 데이터를 movieInfo에 삽입하여 활용
         MovieInfo movieInfo = activity.movies.get(index);
 
-        String urlStr = movieInfo.image;
-        sendImageRequest(urlStr);
+        sendImageRequest(movieInfo.image);
 
         // movieInfo 속 데이터로 프래그먼트 꾸며주기
         title.setText(movieInfo.id +". "+ movieInfo.title);
@@ -82,10 +81,10 @@ public class Fragment1 extends Fragment {
 
     // 이미지를 다운로드 받아서 이미지뷰에 표시하기 위한 메서드
     public void sendImageRequest(String urlStr) {
-        String url = urlStr;
 
-        ImageLoadTask task = new ImageLoadTask(url, imageView);
+        ImageLoadTask task = new ImageLoadTask(urlStr, imageView);
         task.execute();// 실행됨
+
     }
 
 }

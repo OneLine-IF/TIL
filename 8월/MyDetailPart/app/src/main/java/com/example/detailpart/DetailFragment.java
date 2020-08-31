@@ -9,15 +9,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.detailpart.data.MovieInfo;
+import com.example.detailpart.data.MovieList;
+import com.example.detailpart.data2.CommentInfo;
+import com.example.detailpart.data2.CommentList;
+import com.example.detailpart.data2.ResponseInfo2;
+import com.google.gson.Gson;
+
+import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
 
@@ -42,20 +57,25 @@ public class DetailFragment extends Fragment {
 
     int index;
 
+    ImageView imageView;
+
     TextView title;
+    ImageView grade;
     TextView date;
-
-    TextView audience_rating;
-
-    TextView reservation_gradeRate;
-    int grade;
-
     TextView genreDuration;
+    TextView reservation_gradeRate;
+    RatingBar rb;
+    TextView audience_rating;
     TextView audience;
     TextView synopsis;
     TextView director;
     TextView actor;
 
+    String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList" + "?" + "id=";
+
+    ArrayList<CommentInfo> comments = new ArrayList<CommentInfo>();
+
+    ListView listView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -75,6 +95,17 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.detail_fragment, container, false);
+
+        // 액티비티에서 번들에 담아 보내준 인덱스값 받기
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            index = bundle.getInt("index2");
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 한줄평 코멘트 데이터 가져오기 관련 코드
+        AppHelper.requestQueue = Volley.newRequestQueue(activity.getApplicationContext());
+        requestCommentList(index+1);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 좋아요, 싫어요 버튼 관련 코드
@@ -117,18 +148,9 @@ public class DetailFragment extends Fragment {
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 리스트뷰 관련 코드
-
         items = new ArrayList<CommentItem>();
-
-        ListView listView = (ListView) rootView.findViewById(R.id.listView);
-
+        listView = (ListView) rootView.findViewById(R.id.listView);
         adapter = new CommentAdapter();
-        adapter.addItem(new CommentItem("kwh05**","15분 전", "적당히 재미없다. 오랜만에 잠 오는 영화 봤네요.",R.drawable.user1, (float) 1.5));
-        adapter.addItem(new CommentItem("kwh05**","15분 전", "적당히 재미없다. 오랜만에 잠 오는 영화 봤네요.",R.drawable.user1, (float) 2.5));
-        adapter.addItem(new CommentItem("kwh05**","15분 전", "적당히 재미없다. 오랜만에 잠 오는 영화 봤네요.",R.drawable.user1, (float) 3.5));
-        adapter.addItem(new CommentItem("kwh05**","15분 전", "적당히 재미없다. 오랜만에 잠 오는 영화 봤네요.",R.drawable.user1, (float) 4.5));
-
-        listView.setAdapter(adapter);// 어뎁터에 있는 정보들을 리스트뷰에서 보여줌
 
         // 스크롤뷰와 리스트뷰 스크롤 충돌 관련 메서드
         scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
@@ -164,42 +186,122 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        // 액티비티에서 번들에 담아 보내준 인덱스값 받기
-        Bundle bundle = getArguments();
-        if(bundle != null) {
-            index = bundle.getInt("index2");
-        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 액티비티에서 웹을 통해 받은 데이터로 영화 상세화면 꾸미기
 
+        // 액티비티에서 넘어온 인덱스의 영화 상세 정보를 movieInfo 변수에 담기
         MovieInfo movieInfo = activity.movies.get(index);
 
-        // 상세 화면 꾸미기
+        // 상세 화면 구성 요소 찾기
+        imageView = (ImageView)rootView.findViewById(R.id.imageView);
         title = (TextView)rootView.findViewById(R.id.title);
-        int grade;
+        grade = (ImageView)rootView.findViewById(R.id.grade);
         date = (TextView)rootView.findViewById(R.id.date);
         genreDuration = (TextView)rootView.findViewById(R.id.genreDuration);
-        // -> 여기 좋아요 싫어요 버튼 순서
         reservation_gradeRate = (TextView)rootView.findViewById(R.id.reservation_gradeRate);
+        rb = (RatingBar)rootView.findViewById(R.id.ratingBar);
         audience_rating = (TextView)rootView.findViewById(R.id.audience_rating);
         audience = (TextView)rootView.findViewById(R.id.audience);
         synopsis = (TextView)rootView.findViewById(R.id.synopsis);
         director = (TextView)rootView.findViewById(R.id.director);
         actor = (TextView)rootView.findViewById(R.id.actor);
 
+        // 상세 화면 꾸며주기
+        sendImageRequest(movieInfo.thumb);
+
         title.setText(movieInfo.title);
+
+        gradeImage(movieInfo.grade);
+
         date.setText(movieInfo.date + " 개봉");
         genreDuration.setText(movieInfo.genre + " / " + movieInfo.duration + "분");
+
+        likeCount = movieInfo.like;
+        dislikeCount = movieInfo.dislike;
+        likeCountView.setText(String.valueOf(likeCount));
+        dislikeCountView.setText(String.valueOf(dislikeCount));
+
         reservation_gradeRate.setText(movieInfo.reservation_grade + "위 " + movieInfo.reservation_rate + "%");
+        rb.setRating(movieInfo.audience_rating/2);
         audience_rating.setText("" + movieInfo.audience_rating);
         audience.setText(movieInfo.audience + "명");
         synopsis.setText(movieInfo.synopsis);
         director.setText(movieInfo.director);
         actor.setText(movieInfo.actor);
 
-
-        // ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 좋아요, 싫어요, 레이팅바 설정 + 모두보기, 작성하기
-
-
         return rootView;
+    }
+
+    // 데이터를 요청하고 응답을 받는 메서드 (volley, gson 라이브러리를 gradle에 추가)
+    public void requestCommentList(int idx) {
+        String urlstr = url + idx;
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                urlstr,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        processResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(activity.getApplicationContext(),"코멘크 정보 에러 발생 : " + index, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+
+    }
+
+    // 받은 응답을 Gson으로 변환해주는 메서드
+    public void processResponse(String response) {
+        Gson gson = new Gson();
+
+        // 응답이 정상인지 4개의 정보만 먼저 파싱
+        ResponseInfo2 info = gson.fromJson(response, ResponseInfo2.class);
+
+        if(info.code == 200){
+            CommentList commentList = gson.fromJson(response, CommentList.class);
+
+            comments = commentList.result;
+
+            for(int i=0; i<comments.size(); i++) {
+                CommentInfo coInfo = comments.get(i);
+                adapter.addItem(new CommentItem(coInfo.writer, coInfo.contents, coInfo.contents, coInfo.recommend, R.drawable.user1, coInfo.rating/2));
+            }
+            listView.setAdapter(adapter);// 어뎁터에 있는 정보들을 리스트뷰에서 보여줌
+
+            Toast.makeText(activity.getApplicationContext(),"한줄평 개수 : " + comments.size(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // 이미지를 다운로드 받아서 이미지뷰에 표시하기 위한 메서드
+    public void sendImageRequest(String urlStr) {
+
+        ImageLoadTask task = new ImageLoadTask(urlStr, imageView);
+        task.execute();// 실행됨
+
+    }
+
+    // 관람 등급 이미지 설정 관련 메서드
+    public void gradeImage(int gradeValue) {
+        if(gradeValue == 12) {
+            grade.setImageResource(R.drawable.ic_12);
+        }
+        else if(gradeValue == 15) {
+            grade.setImageResource(R.drawable.ic_15);
+        }
+        else if(gradeValue == 19) {
+            grade.setImageResource(R.drawable.ic_19);
+        }
+        else {
+            grade.setImageResource(R.drawable.ic_all);
+        }
     }
 
     @Override
@@ -212,7 +314,7 @@ public class DetailFragment extends Fragment {
                 String contents = intent.getStringExtra("contents");// 사용자가 입력했던 한줄평 정보
                 Float rating = intent.getFloatExtra("rating",0.0f);// 사용자가 지정했던 별점 정보
 
-                adapter.addItem(new CommentItem("kwh05**","방금 전", contents,R.drawable.user1, rating));// 받아온 정보를 CommentItem 자료형의 형태로 어뎁터에 삽입
+                adapter.addItem(new CommentItem("kwh0525","방금 전", contents, 0,R.drawable.user1, rating));// 받아온 정보를 CommentItem 자료형의 형태로 어뎁터에 삽입
                 adapter.notifyDataSetChanged();// 리스트뷰에 보여지는 어뎁터 정보를 갱신
             }
         } else if(requestCode == 102) {// 요청코드가 102일 경우, 모두보기 화면에서 돌아온 것
@@ -261,7 +363,6 @@ public class DetailFragment extends Fragment {
 
     // 리스트뷰의 정보를 저장하기 위한 어뎁터 정의
     class CommentAdapter extends BaseAdapter {// 리스트뷰로 보여지는 정보를 관리하기 위한 어뎁터 생성
-        // ArrayList<CommentItem> items; -> 여기서 선언해주면 다른 메서드에서 활용 불가하므로 전역으로 선언
 
         @Override
         public int getCount() { // 몇개의 아이템이 있는지
@@ -281,6 +382,7 @@ public class DetailFragment extends Fragment {
         public long getItemId(int i) {
             return i;
         }
+
         // 뷰는 레이아웃으로 구성이 돼야 될 거에요. 그러면 레이아웃에 해당하는 거를 부분 화면으로
         // 하나 정의를 하고 이걸 이용해서 객체를 만든 다음 데이터를 설정하고 리턴을 해주는 게 가장 좋은 방법 중 하나!
         @Override
@@ -295,6 +397,7 @@ public class DetailFragment extends Fragment {
             view.setId(item.getId());
             view.setTime(item.getTime());
             view.setComment(item.getComment());
+            view.setRecommend(item.getRecommend());
             view.setImage(item.getResId());
             view.setRatingBar(item.getRating());
 
