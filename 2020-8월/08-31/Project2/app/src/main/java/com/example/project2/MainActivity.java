@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     Fragment2 fragment2;
     Fragment3 fragment3;
     FragmentTransaction transaction;
+    MovieDetailFragment moviedetailfragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
         pager.setAdapter(adapter2);
 
+        moviedetailfragment = new MovieDetailFragment();
+
+
+    }
+    public void onFragmentChange(int index){
+        if(index == 0){
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,moviedetailfragment).commit();
+        }
     }
 
 
