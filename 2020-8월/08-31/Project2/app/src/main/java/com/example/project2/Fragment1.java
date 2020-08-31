@@ -1,0 +1,66 @@
+package com.example.project2;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
+
+import java.util.ArrayList;
+
+public class Fragment1 extends Fragment {
+    MainActivity mainActivity;
+    Fragment1 fragment1;
+    MovieDetailFragment moviedetailfragment;
+    ViewPager pager;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1,container,false);
+        mainActivity = new MainActivity();
+        fragment1 = new Fragment1();
+        Button button = rootView.findViewById(R.id.detail);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, moviedetailfragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        return rootView;
+    }
+    /*public class MoviePagerAdapter extends FragmentStatePagerAdapter {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
+        public MoviePagerAdapter(@NonNull FragmentManager fm){
+            super(fm);
+        }
+
+        public void addItem(Fragment item){
+            items.add(item);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+    }*/
+}
