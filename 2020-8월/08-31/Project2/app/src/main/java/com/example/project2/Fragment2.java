@@ -1,5 +1,6 @@
 package com.example.project2;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +21,36 @@ public class Fragment2 extends Fragment {
     Fragment2 fragment2;
     ViewPager pager;
     MovieDetailFragment moviedetailfragment;
+    MainActivity mainActivity;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity)getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mainActivity = null;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment2,container,false);
         fragment2 = new Fragment2();
+        moviedetailfragment = new MovieDetailFragment();
         Button button = rootView.findViewById(R.id.detail);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                /*FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.container, moviedetailfragment);
                 transaction.addToBackStack(null);
-                transaction.commit();
+                transaction.commit();*/
+                mainActivity.onFragmentChange(0);
             }
         });
 

@@ -25,19 +25,20 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></androidx.viewpager.widget.ViewPager>
-
-    <FrameLayout
-        android:id="@+id/movie_detail_fragment_container"
-        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment
-            android:id="@+id/movie_detail_fragment"
-            android:name="com.example.project2.MovieDetailFragment"
+        <FrameLayout
+            android:id="@+id/movie_detail_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></fragment>
-    </FrameLayout>
+            android:layout_height="match_parent">
+
+            <fragment
+                android:id="@+id/movie_detail_fragment"
+                android:name="com.example.project2.MovieDetailFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></fragment>
+        </FrameLayout>
+    </androidx.viewpager.widget.ViewPager>
 
 
 </LinearLayout>

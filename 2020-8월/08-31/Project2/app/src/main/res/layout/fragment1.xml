@@ -50,4 +50,6 @@
         android:background="@drawable/button_background"
         android:text="상세보기"
         android:textColor="#FFFFFF" />
+
+
 </LinearLayout>
