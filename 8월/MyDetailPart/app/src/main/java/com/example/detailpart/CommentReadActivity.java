@@ -102,7 +102,7 @@ public class CommentReadActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "작성하기 화면에서 돌아왔습니다.", Toast.LENGTH_SHORT).show();
 
-                CommentItem item = (CommentItem) new CommentItem("kwh05**","방금 전", contents, R.drawable.user1, rating);// 이를 CommentItem 자료형의 item 변수에 저장
+                CommentItem item = (CommentItem) new CommentItem("whok0525","방금 전", contents, 0, R.drawable.user1, rating);// 이를 CommentItem 자료형의 item 변수에 저장
                 adapter.addItem(item);// 어뎁터에 추가된 정보를 저장
                 adapter.notifyDataSetChanged();// 리스트뷰에 보여지는 어뎁터 갱신
 

@@ -5,16 +5,18 @@ import android.os.Parcelable;
 
 public class CommentItem implements Parcelable {
 
-    String Id;
-    String Time;
-    String Comment;
-    int resId;
-    float rating;
+    public String Id;
+    public String Time;
+    public String Comment;
+    public int Recommend;
+    public int resId;
+    public float rating;
 
-    public CommentItem(String Id, String Time, String Comment, int resId, float rating) {
+    public CommentItem(String Id, String Time, String Comment, int Recommend, int resId, float rating) {
         this.Id = Id;
         this.Time = Time;
         this.Comment = Comment;
+        this.Recommend = Recommend;
         this.resId = resId;
         this.rating = rating;
     }
@@ -23,6 +25,7 @@ public class CommentItem implements Parcelable {
         Id = src.readString();
         Time = src.readString();
         Comment = src.readString();
+        Recommend = src.readInt();
         resId = src.readInt();
         rating = src.readFloat();
     }
@@ -64,6 +67,14 @@ public class CommentItem implements Parcelable {
         Comment = comment;
     }
 
+    public int getRecommend() {
+        return Recommend;
+    }
+
+    public void setRecommend(int recommend) {
+        Recommend = recommend;
+    }
+
     public int getResId() {
         return resId;
     }
@@ -86,6 +97,7 @@ public class CommentItem implements Parcelable {
                 "Id='" + Id + '\'' +
                 ", Time='" + Time + '\'' +
                 ", Comment='" + Comment + '\'' +
+                ", Recommend=" + Recommend +
                 ", resId=" + resId +
                 ", rating=" + rating +
                 '}';
@@ -101,6 +113,7 @@ public class CommentItem implements Parcelable {
         parcel.writeString(Id);
         parcel.writeString(Time);
         parcel.writeString(Comment);
+        parcel.writeInt(Recommend);
         parcel.writeInt(resId);
         parcel.writeFloat(rating);
     }

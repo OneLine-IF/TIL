@@ -25,11 +25,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.detailpart.data.MovieInfo;
 import com.example.detailpart.data.MovieList;
-import com.example.detailpart.data.Responseinfo;
+import com.example.detailpart.data.ResponseInfo;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -43,15 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
     ViewPager pager;
 
-    //MovieList movieList;
-
     MoviePagerAdapter adapter;
 
     ArrayList<DetailFragment> details = new ArrayList<DetailFragment>();// 각 영화별 상세화면 정보를 담아놓음
 
     int fragIndex = 0;// 뷰페이저의 현재 조각(사용자가 보고 있는)의 인덱스값을 저장
 
-    String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
+    String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie" + "?" + "id=";
 
     ArrayList<MovieInfo> movies = new ArrayList<MovieInfo>();
 
@@ -66,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbarText = (TextView) findViewById(R.id.toolbar_title);
 
-        url += "?" + "id=";
         // 영화 목록 데이터를 요청 -> requestMovieList 메서드가 아래의 코드보다 위에 있으면 에러 발생
         AppHelper.requestQueue = Volley.newRequestQueue(getApplicationContext());// 이 코드가 requestMovieList 메서드보다 먼저 실행되어야 함
         for(int i=1; i<=5; i++) {
@@ -144,10 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
     // 데이터를 요청하고 응답을 받는 메서드(volley, gson 라이브러리를 gradle에 추가)
     public void requestMoveList(int i) {
-        // 영화 목록 화면 웹 url
-        //StringBuilder url = new StringBuilder("http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList");
-        //url.append("?" + "type=1");
-
         String urlstr = url + i;
 
         StringRequest request = new StringRequest(
@@ -177,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
     public void processResponse(String response) {
         Gson gson = new Gson();
 
-        Responseinfo info = gson.fromJson(response, Responseinfo.class);
+        ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
         // 응답이 정상인지 확인
         if(info.code == 200){
             // 아까 Responseinfo에서 파싱해주지 않았던 것을 파싱
@@ -186,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
             MovieInfo movieInfo = movieList.result.get(0);
 
             movies.add(movieInfo);
-
-            //Toast.makeText(getApplicationContext(),"영화 개수 : " + movieList.result.size() ,Toast.LENGTH_SHORT).show();
 
             // 영화 목록
             Fragment1 fragment1 = new Fragment1();
@@ -214,34 +204,6 @@ public class MainActivity extends AppCompatActivity {
             tmp = tmp+1;
         }
     }
-    /*
-    public void processResponse2(String response) {
-        Gson gson = new Gson();
-
-        Responseinfo info2 = gson.fromJson(response, Responseinfo.class);
-        // 응답이 정상인지 확인
-        if(info2.code == 200){
-            // 아까 Responseinfo에서 파싱해주지 않았던 것을 파싱 -> 이부분 변경
-            movieList = gson.fromJson(response, MovieList.class);
-
-            Toast.makeText(getApplicationContext(),"영화 개수 : " + movieList.result.size() ,Toast.LENGTH_SHORT).show();
-
-            for (int i=0; i<5; i++) {
-                // 영화 상세
-                DetailFragment detailFragment = new DetailFragment();
-
-                // 번들에 인덱스값을 담아서 영화 상세 프래그먼트로 전달
-                Bundle bundle2 = new Bundle(1);
-                bundle2.putInt("index2", i);
-                detailFragment.setArguments(bundle2);
-
-                details.add(i, detailFragment);
-
-            }
-
-        }
-    }
-    */
 
     // 좌측 상단 햄버거 아이콘이 눌리면 드로어 레이아웃을 보여주도록 함
     @Override
