@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -35,6 +36,8 @@ import com.google.gson.Gson;
 import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DetailFragment extends Fragment {
     MainActivity activity;
@@ -231,6 +234,38 @@ public class DetailFragment extends Fragment {
 
         return rootView;
     }
+    // 새로 추가된 한줄평 데이터를 서버로 보내주는 메서드
+    public void postCommentList(int idx) {
+        String urlstr = url + idx;
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                urlstr,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("comment", items.get(items.size()-1).toString());
+                return params;
+            }
+        };
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+
+    }
 
     // 데이터를 요청하고 응답을 받는 메서드 (volley, gson 라이브러리를 gradle에 추가)
     public void requestCommentList(int idx) {
@@ -248,7 +283,7 @@ public class DetailFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(activity.getApplicationContext(),"코멘크 정보 에러 발생 : " + index, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.getApplicationContext(),"코멘트 정보 에러 발생 : " + index, Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -314,6 +349,9 @@ public class DetailFragment extends Fragment {
                 String contents = intent.getStringExtra("contents");// 사용자가 입력했던 한줄평 정보
                 Float rating = intent.getFloatExtra("rating",0.0f);// 사용자가 지정했던 별점 정보
 
+                // 새로운 추가해준 한줄평 데이터 서버에도 보내주기
+                postCommentList(index+1);
+
                 adapter.addItem(new CommentItem("kwh0525","방금 전", contents, 0,R.drawable.user1, rating));// 받아온 정보를 CommentItem 자료형의 형태로 어뎁터에 삽입
                 adapter.notifyDataSetChanged();// 리스트뷰에 보여지는 어뎁터 정보를 갱신
             }
@@ -321,12 +359,18 @@ public class DetailFragment extends Fragment {
             if(intent != null) {
                 ArrayList<CommentItem> newItems = (ArrayList<CommentItem>) intent.getSerializableExtra("newItems");// 모두보기 화면에서 작성하기 버튼을 통해 추가되었던 정보들
 
-                //Toast.makeText(this, "모두보기 화면에서 돌아왔습니다. 추가된 정보의 개수 : " + newItems.size(), Toast.LENGTH_SHORT).show();
+                adapter.addItem(newItems.get(newItems.size()-1));
+                adapter.notifyDataSetChanged();
+                // 새로운 추가해준 한줄평 데이터 서버에도 보내주기
+                postCommentList(index+1);
 
+                /*
                 for(int i = 0; i < newItems.size(); i++){// ArrayList<CommentItem> 자료형으로 받아온 정보의 수만큼
                     adapter.addItem(newItems.get(i));// 어뎁터에 추가하고
                     adapter.notifyDataSetChanged();// 리스트뷰에 보여지는 어뎁터 정보를 갱신
                 }
+
+                 */
             }
         }
     }
