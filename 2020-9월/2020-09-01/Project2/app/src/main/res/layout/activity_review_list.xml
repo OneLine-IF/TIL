@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#D3D3D3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="군도"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <ImageView
+                android:id="@+id/image_view4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_15"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#D3D3D3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <View
+
+                android:layout_width="0dp"
+
+                android:layout_height="0dp"
+
+                android:layout_weight="1"
+
+                />
+
+            <RatingBar
+                android:id="@+id/rating_bar3"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="4.1"
+                android:stepSize="0.1"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                android:id="@+id/text_view9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8.2 (1,142명 참여)"
+                android:textStyle="bold"
+                android:layout_margin="5dp"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#D3D3D3" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#D3D3D3" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/review2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="17dp"
+            android:text="한줄평"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+        <View
+
+            android:layout_width="0dp"
+
+            android:layout_height="0dp"
+
+            android:layout_weight="1"
+
+            />
+
+        <Button
+            android:id="@+id/review_writing2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="17dp"
+            android:background="@drawable/write"
+            android:drawableLeft="@drawable/ic_review_selected"
+            android:text="작성하기"
+            android:textColor="#FF4500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_view2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
