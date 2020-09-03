@@ -23,15 +23,7 @@ public class CommentReadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 액션바 객체를 받고 이름을 변경하기 위한 코드
-
-        //ActionBar actionBar = getSupportActionBar();
         setContentView(R.layout.activity_comment_read);
-        //actionBar.setDisplayHomeAsUpEnabled(true);// 상단의 액션바에 뒤로가기 버튼이 보여지도록 함
-        //actionBar.setDisplayShowTitleEnabled(false);
-        //actionBar.setTitle("한줄평 목록");
-
-
 
         ListView listView = (ListView) findViewById(R.id.listView);
 
@@ -99,8 +91,6 @@ public class CommentReadActivity extends AppCompatActivity {
             if(intent != null) {// 인텐트가 비어있지 않다면
                 String contents = intent.getStringExtra("contents");// 사용자가 입력했던 한줄평 정보를 저장
                 Float rating = intent.getFloatExtra("rating",0.0f);// 사용자가 지정했던 별점 정보를 저장
-
-                Toast.makeText(this, "작성하기 화면에서 돌아왔습니다.", Toast.LENGTH_SHORT).show();
 
                 CommentItem item = (CommentItem) new CommentItem("whok0525","방금 전", contents, 0, R.drawable.user1, rating);// 이를 CommentItem 자료형의 item 변수에 저장
                 adapter.addItem(item);// 어뎁터에 추가된 정보를 저장

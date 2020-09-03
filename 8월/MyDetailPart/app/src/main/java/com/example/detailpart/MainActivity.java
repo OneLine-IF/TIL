@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     MoviePagerAdapter adapter;
 
-    ArrayList<DetailFragment> details = new ArrayList<DetailFragment>();// 각 영화별 상세화면 정보를 담아놓음
+    ArrayList<DetailFragment> details = new ArrayList<DetailFragment>();// 각 영화별 상세화면 정보를 저장
 
     int fragIndex = 0;// 뷰페이저의 현재 조각(사용자가 보고 있는)의 인덱스값을 저장
 
@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if(id == R.id.account ){
                     toolbarText.setText("영화 목록");
-                    Toast.makeText(context, "영화 목록", Toast.LENGTH_SHORT).show();
                     // 상세 화면에서 바로가기 메뉴의 "영화 목록"을 눌렀을 때, 영화 상세 화면을 제거
                     getSupportFragmentManager().beginTransaction().remove(details.get(fragIndex)).commit();
                 }
@@ -127,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 fragIndex = position;
-                Toast.makeText(getApplicationContext(),"현재 조각 : " + position,Toast.LENGTH_SHORT).show();
             }
 
             @Override
