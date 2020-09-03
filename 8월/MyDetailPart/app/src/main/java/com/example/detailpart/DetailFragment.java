@@ -105,12 +105,10 @@ public class DetailFragment extends Fragment {
             index = bundle.getInt("index2");
         }
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 한줄평 코멘트 데이터 가져오기 관련 코드
         AppHelper.requestQueue = Volley.newRequestQueue(activity.getApplicationContext());
         requestCommentList(index+1);
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 좋아요, 싫어요 버튼 관련 코드
         likeButton = (Button) rootView.findViewById(R.id.likeButton);// 좋아요 버튼 증감 관련 코드
         likeButton.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +147,6 @@ public class DetailFragment extends Fragment {
         likeCountView = (TextView) rootView.findViewById(R.id.likeCountView);
         dislikeCountView = (TextView) rootView.findViewById(R.id.dislikeCountView);
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 리스트뷰 관련 코드
         items = new ArrayList<CommentItem>();
         listView = (ListView) rootView.findViewById(R.id.listView);
@@ -165,8 +162,7 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 화면 전환 관련 코드
+        //// 화면 전환 관련 코드
 
         // 작성하기 화면으로 넘어가기 위한 메서드
         Button writeButton = (Button) rootView.findViewById(R.id.writeButton);
@@ -189,8 +185,7 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 액티비티에서 웹을 통해 받은 데이터로 영화 상세화면 꾸미기
+        //// 액티비티에서 웹을 통해 받은 데이터로 영화 상세화면 꾸미기
 
         // 액티비티에서 넘어온 인덱스의 영화 상세 정보를 movieInfo 변수에 담기
         MovieInfo movieInfo = activity.movies.get(index);
@@ -311,7 +306,6 @@ public class DetailFragment extends Fragment {
             }
             listView.setAdapter(adapter);// 어뎁터에 있는 정보들을 리스트뷰에서 보여줌
 
-            Toast.makeText(activity.getApplicationContext(),"한줄평 개수 : " + comments.size(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -344,13 +338,12 @@ public class DetailFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == 101) {// 요청코드가 101일 경우, 작성하기 화면에서 돌아온 것
             if(intent != null) {
-                //Toast.makeText(this, "작성하기 화면에서 돌아왔습니다.", Toast.LENGTH_SHORT).show();
 
                 String contents = intent.getStringExtra("contents");// 사용자가 입력했던 한줄평 정보
                 Float rating = intent.getFloatExtra("rating",0.0f);// 사용자가 지정했던 별점 정보
 
                 // 새로운 추가해준 한줄평 데이터 서버에도 보내주기
-                postCommentList(index+1);
+                //postCommentList(index+1);
 
                 adapter.addItem(new CommentItem("kwh0525","방금 전", contents, 0,R.drawable.user1, rating));// 받아온 정보를 CommentItem 자료형의 형태로 어뎁터에 삽입
                 adapter.notifyDataSetChanged();// 리스트뷰에 보여지는 어뎁터 정보를 갱신
@@ -359,18 +352,13 @@ public class DetailFragment extends Fragment {
             if(intent != null) {
                 ArrayList<CommentItem> newItems = (ArrayList<CommentItem>) intent.getSerializableExtra("newItems");// 모두보기 화면에서 작성하기 버튼을 통해 추가되었던 정보들
 
-                adapter.addItem(newItems.get(newItems.size()-1));
-                adapter.notifyDataSetChanged();
                 // 새로운 추가해준 한줄평 데이터 서버에도 보내주기
-                postCommentList(index+1);
+                //postCommentList(index+1);
 
-                /*
                 for(int i = 0; i < newItems.size(); i++){// ArrayList<CommentItem> 자료형으로 받아온 정보의 수만큼
                     adapter.addItem(newItems.get(i));// 어뎁터에 추가하고
-                    adapter.notifyDataSetChanged();// 리스트뷰에 보여지는 어뎁터 정보를 갱신
                 }
-
-                 */
+                adapter.notifyDataSetChanged();// 리스트뷰에 보여지는 어뎁터 정보를 갱신
             }
         }
     }
