@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -45,6 +46,19 @@ public class MovieDetailFragment extends Fragment {
     ListView listView;
     boolean likeState = false;
     boolean dislikeState = false;
+    MainActivity mainActivity;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mainActivity.getSupportActionBar().setTitle("영화 목록");
+    }
 
     @Nullable
     @Override
@@ -142,6 +156,9 @@ public class MovieDetailFragment extends Fragment {
                 return false;
             }
         });
+
+
+
 
         return rootView;
     }
