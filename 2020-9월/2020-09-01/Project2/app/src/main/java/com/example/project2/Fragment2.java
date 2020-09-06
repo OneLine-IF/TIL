@@ -40,6 +40,8 @@ public class Fragment2 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment2,container,false);
+
+        mainActivity = (MainActivity) getActivity();
         fragment2 = new Fragment2();
         moviedetailfragment = new MovieDetailFragment();
         Button button = rootView.findViewById(R.id.detail);
@@ -47,7 +49,7 @@ public class Fragment2 extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,moviedetailfragment).addToBackStack(null).commit();
-
+                mainActivity.getSupportActionBar().setTitle("영화 상세");
             }
         });
 
