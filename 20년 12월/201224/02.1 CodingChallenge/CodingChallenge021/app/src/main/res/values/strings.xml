@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CodingChallenge02.1</string>
+    <string name="text_one">Text One</string>
+    <string name="text_two">Text Two</string>
+    <string name="text_three">Text Three</string>
+    <string name="activity2_name">Second Activity</string>
+</resources>
