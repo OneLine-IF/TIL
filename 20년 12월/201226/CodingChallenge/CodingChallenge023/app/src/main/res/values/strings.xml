@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">CodingChallenge02.2</string>
+    <string name="add_item">Add Item</string>
+    <string name="text_shop_list">ShoppingList</string>
+    <string name="activity2">SecondActivity</string>
+    <string name="button_banana">banana</string>
+    <string name="button_water">Water</string>
+    <string name="button_beer">Beer</string>
+    <string name="button_noodle">Noodle</string>
+    <string name="button_milk">MILK</string>
+    <string name="button_cheese">Cheese</string>
+    <string name="button_rice">Rice</string>
+    <string name="button_apple">Apple</string>
+    <string name="button_egg">Egg</string>
+    <string name="button_poke">Poke</string>
+
+    <string name="edittext_loc">Golden Gate Bridge</string>
+    <string name="button_loc">Open Location</string>
+</resources>
