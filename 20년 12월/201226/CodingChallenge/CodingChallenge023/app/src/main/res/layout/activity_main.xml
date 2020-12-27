@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/text_item_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_four"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_five"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_six"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_seven"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_eight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_nine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_item_ten"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:text="@string/text_shop_list"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/button_add_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_item"
+        android:onClick="launchSecondActivity"/>
+
+    <EditText
+        android:id="@+id/location_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edittext_loc" />
+
+    <Button
+        android:id="@+id/open_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/button_loc"
+        android:onClick="openLocation"/>
+
+
+</LinearLayout>
