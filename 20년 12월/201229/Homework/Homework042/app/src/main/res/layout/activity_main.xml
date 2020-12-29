@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <CheckBox
+        android:id="@+id/Item_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onSubmit"
+        android:text="@string/checkbox_chocolate_syrup" />
+
+    <CheckBox
+        android:id="@+id/Item_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onSubmit"
+        android:text="@string/checkbox_sprinkles" />
+
+    <CheckBox
+        android:id="@+id/Item_three"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onSubmit"
+        android:text="@string/checkbox_crushed_nuts" />
+
+    <CheckBox
+        android:id="@+id/Item_four"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onSubmit"
+        android:text="@string/checkbox_cherries" />
+
+    <CheckBox
+        android:id="@+id/Item_five"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onSubmit"
+        android:text="@string/checkbox_orio_cookie_crumbles" />
+
+    <Button
+        android:id="@+id/Show_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="showToast"
+        android:text="@string/button_show_toast" />
+</LinearLayout>
