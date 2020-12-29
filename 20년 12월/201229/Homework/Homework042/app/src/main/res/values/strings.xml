@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="checkbox_chocolate_syrup">Chocolate syrup</string>
+    <string name="checkbox_sprinkles">Sprinkles</string>
+    <string name="checkbox_crushed_nuts">Crushed nuts</string>
+    <string name="checkbox_cherries">Cherries</string>
+    <string name="checkbox_orio_cookie_crumbles">Orio cookie crumbles</string>
+    <string name="button_show_toast">Show Toast</string>
+</resources>
