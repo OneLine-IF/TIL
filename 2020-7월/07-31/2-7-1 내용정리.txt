@@ -1,0 +1,161 @@
+2-7-1 내용정리
+3. 이벤트와 리스트뷰 정리3.
+(1) android:layout_gravity="center_vertical"는 정렬에 관한 것.
+(2) 프로필 이미지 원래 네모난 것을 둥그렇게 만들 때
+- Gradle Scripts -> build.gradle(Module app) -> dependencies에서 ->implementation 'de.hdodenhof:circleimageview:2.2.0'입력후 싱크 나우 클릭
+- conmment_itme_view.xml에서 ImageView를     <de.hdodenhof.circleimageview.CircleImageView로 바꿔줌.
+```java
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/user"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FFCCCCCC"/>
+```
+(3) CommentItmeView.java새로 만들기
+- LineatLayout 상속받기
+- Generate > Constructor >두개선택
+- # Q. Context와 context의 차이처럼 대문자와 소문자의 차이가 뭔가요?
+- 총 코드
+```java
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
+
+import com.example.summary2.R;
+
+public class CommentItemView extends LinearLayout {
+    public CommentItemView(Context context) {
+        super(context);
+
+        init(context);//초기화하는 함수.
+    }
+
+    public CommentItemView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+
+        init(context);//초기화하는 함수.
+    }
+
+    private void init(Context context){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.comment_item_view,this,true);
+        //인플레이션 해주어서 데이터 연결하기.
+    }
+
+}
+```
+(4) activity_main.xml에서 listview추가
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="#FF888888">
+
+    <Button
+        android:id="@+id/likeButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/thums_up_selector"/>
+
+    <TextView
+        android:id="@+id/likeCountView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="1"
+        android:textSize="28dp"
+        android:textStyle="bold"/>
+    
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </ListView>
+
+
+</LinearLayout>
+```
+(5) MainActivity.java에서
+- ListView listView = (ListView)findViewById(R.id.listView); 선언
+-  총 코드
+```java
+ package com.example.summary2;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+ public class MainActivity extends AppCompatActivity {
+     TextView likeCountView;Button likeButton;//어디서든 쓸 수 있도록.
+
+     int likeCount = 1;
+     boolean likeState = false; //좋아요 버튼이 눌렸는지 안눌렸는지 상태 확인.(좋아요 버튼이 안눌린 상태)
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        likeButton = (Button)findViewById(R.id.likeButton);
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(likeState){
+                    decrLikeCount();//카운트 줄인다는 뜻의 새로 만든 함수(매서드). 밑에 있음.
+                }else{
+                    incrLikeCount();//카운트 늘인다는 뜻의 새로 만든 함수.
+                }
+
+                likeState = ! likeState;//부정어사용.
+
+
+            }
+        });
+
+        likeCountView = (TextView)findViewById(R.id.likeCountView);
+
+        ListView listView = (ListView)findViewById(R.id.listView);
+
+        CommentAdapter adapter = new CommentAdapter();
+        listView.setAdapter(adapter);
+
+    }
+
+    class CommentAdapter extends BaseAdapter{
+
+    }
+
+    public void incrLikeCount(){
+        likeCount = + 1;
+
+        likeCountView.setText(String.valueOf(likeCount));//setText 에는 숫자를 넣을 수 없으므로 String.valueOf(likeCount)이렇게 변환시키기.
+
+        likeButton.setBackgroundResource(R.drawable.ic_thumb_up_selected);//눌린 상태의 이미지.
+    }
+
+    public void decrLikeCount(){
+        likeCount = -1;
+
+        likeCountView.setText(String.valueOf(likeCount));
+
+        likeButton.setBackgroundResource(R.drawable.thums_up_selector);//원래의 상태 이미지.
+    }
+
+
+}
+```

@@ -1,0 +1,46 @@
+2-6-2 스피너 사용하기
+1. MainActivity에서의 코드
+```java
+package com.example.spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+    TextView textView;
+    String[] items={"트와이스","블랙핑크","에이프릴","오마이걸","레드벨벳"};
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        textView= (TextView)findViewById(R.id.textView);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item,items
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);//스피너를 선택했을 때 보이는 창 설정.
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                textView.setText(items[i]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                textView.setText("선택 : ");
+            }
+        });
+        //문자열 하나만 들어가면 됨. String 이 하나의 아이템으로 들어감., ArrayAdapter 는 아이템이 배열로 들어간다는 뜻.
+
+    }
+}
+```

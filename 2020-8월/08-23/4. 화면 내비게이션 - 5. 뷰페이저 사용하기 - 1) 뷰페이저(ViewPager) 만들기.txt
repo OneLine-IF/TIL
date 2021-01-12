@@ -1,0 +1,127 @@
+# 4. 화면 내비게이션 - 5. 뷰페이저 사용하기 - 1) 뷰페이저(ViewPager) 만들기
+1. 뷰페이저는 손가락으로 좌우 스크롤하여 넘겨볼 수 있는 기능을 제공함
+- 뷰페이저 안에 들어가는 각각의 화면은 프래그먼트로 만들 수 있으며 어댑터 패턴을 사용하여 프래그먼트들을 관리할 수 있음
+2. activity_main.xml
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="3dp"
+        android:text="Button" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button"
+        android:layout_alignParentLeft="true">
+
+    </androidx.viewpager.widget.ViewPager>
+</RelativeLayout>
+```
+3. 프래그먼트 3개 만들기
+- fragment1.xml 을 layout 파일에 세 개 만들기
+- Fragment1.java 를 java 파일에 세 개 만들기
+```java
+package com.example.pager;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class Fragment1 extends Fragment {
+    //Generate > OverrideMethods > onCreateView
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //인플레이션 진행
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1, container, false);
+        return rootView;//xml 레이아웃이 인플레이션 되고 자바 소스 코드와 연결이 됨.
+    }
+}
+```
+4. 프래그먼트 1,2,3 을 뷰페이저 안에 집어 넣어야 하는데 그러려면 어댑터가 필요함 >> 뷰페이저를 위한 설정
+- MainActivity.java
+```java
+package com.example.pager;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import android.os.Bundle;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //밑에 어댑터 작업을  끝내면 이제 여기에 뷰페이저 작업을 시작할 수 있음.
+
+        // 먼저 xml 레이아웃에 추가 되었던 뷰페이저 객체를 찾아야함.
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(3);//캐싱하는 것이 3개까지 늘어난 것.
+
+        MoviePagerAdapter adapter = new MoviePagerAdapter(getSupportFragmentManager());//프래그먼트 매니저 참조
+
+        Fragment1 fragment1 = new Fragment1();
+        adapter.addItem(fragment1);
+        Fragment2 fragment2 = new Fragment2();
+        adapter.addItem(fragment2);
+        Fragment3 fragment3 = new Fragment3();
+        adapter.addItem(fragment3);
+
+        pager.setAdapter(adapter);
+    }
+
+    class MoviePagerAdapter extends FragmentStatePagerAdapter {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
+        //Generate > Constructor
+        public MoviePagerAdapter( FragmentManager fm) {
+            super(fm);
+        }
+
+        //ArrayList 에 아이템을 추가하려면 addItem 필요
+        public void addItem(Fragment item){
+            items.add(item);
+        }
+
+
+        //Generate > implement Methods >ok
+        @Override
+        public Fragment getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            //ArrayList 안에 들어가 있는 아이템의 개수를 리턴.
+            return items.size();
+        }
+    }
+
+}
+```

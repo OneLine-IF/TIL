@@ -1,0 +1,10 @@
+
+public class ClassMember {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Class c1 = new Class1();
+		C1.method1();
+	}
+
+}

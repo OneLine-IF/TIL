@@ -1,0 +1,203 @@
+# 4. 화면 내비게이션 - 5. 뷰페이저 사용하기 - 2) 타이틀스트립 사용하기
+1. activity_main.xml 에 타이틀 스크립 추가
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="3dp"
+        android:text="Button" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button"
+        android:layout_alignParentLeft="true">
+
+        <androidx.viewpager.widget.PagerTitleStrip
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="#55cedf"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="#FFFFFF">
+
+        </androidx.viewpager.widget.PagerTitleStrip>
+
+    </androidx.viewpager.widget.ViewPager>
+</RelativeLayout>
+```
+2. MainActivity.java
+```java
+package com.example.pager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import android.os.Bundle;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //밑에 어댑터 작업을  끝내면 이제 여기에 뷰페이저 작업을 시작할 수 있음.
+
+        // 먼저 xml 레이아웃에 추가 되었던 뷰페이저 객체를 찾아야함.
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(3);//캐싱하는 것이 3개까지 늘어난 것.
+
+        MoviePagerAdapter adapter = new MoviePagerAdapter(getSupportFragmentManager());//프래그먼트 매니저 참조
+
+        Fragment1 fragment1 = new Fragment1();
+        adapter.addItem(fragment1);
+        Fragment2 fragment2 = new Fragment2();
+        adapter.addItem(fragment2);
+        Fragment3 fragment3 = new Fragment3();
+        adapter.addItem(fragment3);
+
+        pager.setAdapter(adapter);
+    }
+
+    class MoviePagerAdapter extends FragmentStatePagerAdapter {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
+        //Generate > Constructor
+        public MoviePagerAdapter( FragmentManager fm) {
+            super(fm);
+        }
+
+        //ArrayList 에 아이템을 추가하려면 addItem 필요
+        public void addItem(Fragment item){
+            items.add(item);
+        }
+
+
+        //Generate > implement Methods >ok
+        @Override
+        public Fragment getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            //ArrayList 안에 들어가 있는 아이템의 개수를 리턴.
+            return items.size();
+        }
+
+        //Generate > Override Methods >getPageTitle(페이지 마다 타이틀을 붙여서 리턴해줌)
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "페이지"+position;
+        }
+    }
+
+}
+```
+3. 버튼을 눌렀을 때 페이지 2가 뜨도록 하기
+- MainActivity.java
+```java
+package com.example.pager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    ViewPager pager;//버튼 클릭 할 때도 언급해야 하기 때문.
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //밑에 어댑터 작업을  끝내면 이제 여기에 뷰페이저 작업을 시작할 수 있음.
+
+        // 먼저 xml 레이아웃에 추가 되었던 뷰페이저 객체를 찾아야함.
+        pager = (ViewPager) findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(3);//캐싱하는 것이 3개까지 늘어난 것.
+
+        MoviePagerAdapter adapter = new MoviePagerAdapter(getSupportFragmentManager());//프래그먼트 매니저 참조
+
+        Fragment1 fragment1 = new Fragment1();
+        adapter.addItem(fragment1);
+        Fragment2 fragment2 = new Fragment2();
+        adapter.addItem(fragment2);
+        Fragment3 fragment3 = new Fragment3();
+        adapter.addItem(fragment3);
+
+        pager.setAdapter(adapter);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pager.setCurrentItem(1);
+            }
+        });
+    }
+
+    class MoviePagerAdapter extends FragmentStatePagerAdapter {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
+        //Generate > Constructor
+        public MoviePagerAdapter( FragmentManager fm) {
+            super(fm);
+        }
+
+        //ArrayList 에 아이템을 추가하려면 addItem 필요
+        public void addItem(Fragment item){
+            items.add(item);
+        }
+
+
+        //Generate > implement Methods >ok
+        @Override
+        public Fragment getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            //ArrayList 안에 들어가 있는 아이템의 개수를 리턴.
+            return items.size();
+        }
+
+        //Generate > Override Methods >getPageTitle(페이지 마다 타이틀을 붙여서 리턴해줌)
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "페이지"+position;
+        }
+    }
+
+}
+```

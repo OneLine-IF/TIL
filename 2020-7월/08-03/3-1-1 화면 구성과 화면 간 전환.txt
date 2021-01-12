@@ -1,0 +1,175 @@
+# 3-1-1 화면 구성과 화면 간 전환
+1. 새로운 프로젝트 만들고 새 화면 추가
+- SampleIntent라는 이름으로 새로운 프로젝트 만들고 MenuActivity 추가
+(1) app > New > Activity > Empty Activity(첫화면 선택)
+(별도로 각각 등록시, AndroidManifest.xml에 등록해 주어야 함.)
+(2) activity_main.xml에 버튼 등록(이 버튼을 등록하면 화면이 바뀌게 설정할 거임)
+(3) 버튼을 클릭했을 때 작동 시키는 방법은 두가지가 있음.
+- OnClick이용
+- MainActivity.java 에서 id찾고 onclickListener 이용
+```java
+package com.example.intent;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);// activity_main.xml 과 MainActivity.java 를 연결해줌.
+        //==> xml 레이아웃을 레이아웃 인플레이션 한 것.
+
+        Button button =(Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),MenyActivity.class);
+                startActivityForResult(intent,101);//화면을 띄워줌., 응답을 받고 싶을 때 사용하는 메서드.
+            }
+        });
+    }
+}
+```
+(4) 다른 xml에 있다면 변수 선언시 같은 변수명을 입력해도 충돌이 없음.
+(5) 메뉴화면에서 메인화면으로 데이터를 넘겨 줄 때 시스템을 통과하기 때문에 인텐트를 사용할 수 있음.
+(6) intent.putExtra() 에 Extra data로 집어 넣으면 다른 액티비티로 전달할 수 있는 방법이 됨.
+(7)MenuActivity.java 총정리
+```java
+package com.example.intent;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+public class MenyActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_meny);
+
+        Button button2 = (Button) findViewById(R.id.button2);
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("name", "jimni");
+                setResult(Activity.RESULT_OK, intent);
+                finish();//메인화면이 보이는 것.
+            }
+        });
+    }
+}
+```
+(8) MainActivity.java 에서 Generate>Override Methods>onActivityResult
+- ```java
+package com.example.intent;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);// activity_main.xml 과 MainActivity.java 를 연결해줌.
+        //==> xml 레이아웃을 레이아웃 인플레이션 한 것.
+
+        Button button =(Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),MenyActivity.class);
+                startActivityForResult(intent,101);//화면을 띄워줌., 응답을 받고 싶을 때 사용하는 메서드.
+
+            }
+        });
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);//응답을 받아주는 메서드.(MenuActivity.java 에서 보낸 intent 를 전달 받는 것.
+
+        if(requestCode==101) {
+            String name = data.getStringExtra("name");//MenuActivity.java 에서 intent 에 name 을 jimni 라고 저장해 놨었음.
+            Toast.makeText(getApplicationContext(),"메뉴화면으로부터의 응답 : " + name , Toast.LENGTH_LONG).show();
+        }
+    }
+}
+```
+(9) manifest에서 추가(대화상자처럼 뜨게 하기)
+```java
+<activity android:name=".MenyActivity"
+            android:label="메뉴"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+```
+2. 사이트 내용
+(1) 어플리케이션 구성요소
+하나의 화면을 나타내는 액티비티는 애플리케이션 구성요소 중의 하나입니다.
+
+애플리케이션 구성요소로는 액티비티(Activity), 서비스(Service), 브로드캐스트 리시버(Broadcast Receiver), 컨텐트 프로바이더(Content Provider)가 있는데 이 클래스들은 안드로이드 SDK에서 제공하는 클래스들입니다.
+- 어플리케이션 구성요소 4가지
+그런데 왜 애플리케이션 구성요소라고 분류해서 부르는 걸까요?
+
+왜냐하면, 이것들은 시스템에서 관리하기 때문입니다.
+
+다시 말해 애플리케이션 구성요소 중의 하나를 만들어 프로젝트에 추가하면 시스템이 이것들을 다루게 되는 거죠.
+
+따라서 새로 추가한 구성요소는 시스템이 알고 있어야 합니다.
+
+여러분들이 매니페스트(AndroidManifest.xml) 파일에 어떤 구성요소가 추가되었는지를 넣어두면 앱이 설치될 때 시스템이 이 파일을 보고 구성요소를 확인할 수 있습니다.
+
+따라서 애플리케이션 구성요소를 추가하면 반드시 매니페스트 파일에 그 정보를 넣어주어야 합니다.
+(2) 액티비티 실행하기
+- 액티비티를 새로 만들고 싶다면 안드로이드 스튜디오의 File -> New 메뉴를 이용해 만들 수 있습니다
+
+프로젝트에 새로운 액티비티가 추가되면 매니페스트 파일에도 <activity> 태그가 자동으로 추가됩니다.
+
+처음 보이는 화면을 메인 액티비티라고 부를 수 있는데 이 메인 액티비티 안에 들어있는 버튼을 눌렀을 때 새로운 액티비티를 화면에 보여주고 싶다면 startActivity나 startActivityForResult 메소드를 사용할 수 있습니다.
+
+이 메소드들을 호출할 때는 인텐트 객체를 파라미터로 전달하여야 하므로 먼저 인텐트 객체를 만들고 메소드를 호출합니다.
+인텐트 객체를 만들 때는 컨텍스트 객체와 화면에 띄울 액티비티의 클래스 인스턴스를 파라미터로 전달합니다.
+
+컨텍스트는 getApplicationContext 메소드를 호출하면 반환받을 수 있으며 화면에 띄울 액티비티의 클래스 인스턴스는 액티비티의 이름 뒤에 점(.)과 class를 붙이면 참조할 수 있습니다.
+
+startActivityForResult 메소드를 호출하면 인텐트 객체가 시스템으로 전달되는데 구체적으로 액티비티 매니저에게 전달됩니다.
+
+액티비티 매니저는 지정한 액티비티를 실행하여 화면에 보여줍니다.
+
+이 과정에서 여러분이 직접 다른 액티비티의 메소드를 호출하여 실행하는 것이 아니라 시스템을 통해서 실행된다는 점을 꼭 기억하세요.
+(3) 액티비티 전환하기
+- 새로운 액티비티를 실행한 후에 다시 원래의 액티비티로 돌아가고 싶다면 단순히 finish 메소드를 호출하기만 하면 됩니다.
+
+왜냐하면, 어플리케이션에서 실행되는 액티비티는 안드로이드 태스크(Android Task)에서 스택(Activity Stack)형태로 관리되며 이때 순서는 각 액티비티가 열린 순서와 같기 때문입니다.
+
+화면에 보이는 액티비티가 있을 때 새로운 화면이 실행되면 그 화면은 기존 화면의 위에 보이는 것과 같습니다.
+
+ 
+
+다시 말해 이전 화면은 멈춤 상태가 되면서 스택 안으로 들어간 것과 유사합니다.
+
+그리고 새로 띄운 화면을 없애주면 이전 화면이 다시 보이게 됩니다.
+
+이때 화면을 없애주는 메소드가 finish인 거죠.
+
+새로 화면을 실행하는 방법과 이전 화면으로 돌아가는 방법을 알게 되었네요.

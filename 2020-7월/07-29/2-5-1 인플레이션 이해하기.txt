@@ -1,0 +1,103 @@
+2-5-1 인플레이션 이해하기
+1. 인플레이션이란?
+- 인플레이션 = XML 레이아웃에 정의된 내용이 메모리에 객체화되는 과정
+2. setContentView()메소드의 역할
+(1) setContentView()메소드의 역할
+ - 화면에 나타낼 뷰를 지정하는 역할
+ - XML 레이아웃의 내용을 메모리 상에 객체화하는 역할
+(2) 전체 화면중에서 일부분만을 차지하는 화면 구성요소들을 XML 레이아웃에서 로딩하여 보여줄 수 없음.
+ - Layoutlnflater 라는 클래스를 제공하며, 이 클래스는 시스템 서비스로 제공됨
+3. 안드로이드  편집화면 폰트 크기 올리는 방법
+- File -> Settings -> Editoer -> Colors&Fonts -> Font
+4. 코드
+(1) MainActivity.java코드
+```java
+package com.example.layoutinflater;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+
+public class MainActivity extends AppCompatActivity {
+    FrameLayout container;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);//버튼을 메모리에 객체화 시키는 역할.
+
+        container = (FrameLayout) findViewById(R.id.container);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                inflater.inflate(R.layout.sub1,container,true);//만든 sub1.xml 파일을 만들어준 container 공간에 넣기.
+            }
+        });
+    }
+}
+```
+(2) sub1.xml(새로운 xml파일)
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#03A9F4"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="부분화면"
+        android:textSize="40dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+</LinearLayout>
+```
+(3) activity_main.xml 코드
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.051" />
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="409dp"
+        android:layout_height="646dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button">
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+ 

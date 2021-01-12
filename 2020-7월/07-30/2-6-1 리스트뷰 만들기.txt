@@ -1,0 +1,464 @@
+2-6-1 리스트뷰 만들기
+13. 어댑터 클래스의 소스 코드 구성
+```java
+package com.example.mylist;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ListView listView = (ListView) findViewById(R.id.listView);//리스트 뷰 객체 찾기
+
+
+    }
+
+    class SingerAdapter extends BaseAdapter{
+        ArrayList<SingerItem> items = new ArrayList<SingerItem>();
+        @Override
+        public int getCount() {
+            return items.size();//위의 아이템의 개수가 몇 개인지 알려줌.
+        }
+
+        public void addItem(SingerItem item){
+            items.add(item);
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View convertView, ViewGroup viewGroup) {
+            SingerItemView view = new SingerItemView(getApplicationContext());
+
+            SingerItem item = items.get(i); //아이템 안에 데이터가 들어가 있는 것.
+            view.setName(item.getName());
+            view.setMobile(item.getMobile());
+
+            return view;//이 뷰를 리턴해주면 그대로 리스트 뷰 하나의 아이템으로 보임.
+        }
+    }
+
+}
+```
+14. 이제 리스트 뷰에 어댑터 객체를 만든 후 설정을 해주는 과정이 필요.
+(어댑터를 위하여 각각의 아이템을 위한 뷰 객체 정의)
+15. MainActivity에 코드 추가
+```java
+package com.example.mylist;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ListView listView = (ListView) findViewById(R.id.listView);//리스트 뷰 객체 찾기
+
+        SingerAdapter adapter = new SingerAdapter();//객체 생성
+        adapter.addItem(new SingerItem("트와이스","010-1000-1000"));
+        adapter.addItem(new SingerItem("블랙핑크","010-2000-2000"));
+        adapter.addItem(new SingerItem("에이프릴","010-3000-3000"));
+        adapter.addItem(new SingerItem("오마이걸","010-4000-4000"));
+        adapter.addItem(new SingerItem("레드벨벳","010-5000-5000"));
+        listView.setAdapter(adapter);//adapter 객체를 파라미터로 전달 => 리스트뷰가 어댑터를 알게 됨
+
+
+
+    }
+
+    class SingerAdapter extends BaseAdapter{
+        ArrayList<SingerItem> items = new ArrayList<SingerItem>();
+        @Override
+        public int getCount() {
+            return items.size();//위의 아이템의 개수가 몇 개인지 알려줌.
+        }
+
+        public void addItem(SingerItem item){
+            items.add(item);
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View convertView, ViewGroup viewGroup) {
+            SingerItemView view = new SingerItemView(getApplicationContext());
+
+            SingerItem item = items.get(i); //아이템 안에 데이터가 들어가 있는 것.
+            view.setName(item.getName());
+            view.setMobile(item.getMobile());
+
+            return view;//이 뷰를 리턴해주면 그대로 리스트 뷰 하나의 아이템으로 보임.
+        }
+    }
+
+}
+```
+16. 전화번호 부에 이미지 추가
+(1) singer_item.xml의 <ImageView>에 ```java android:id="@+id/imageView"``` 추가
+(2) SingerItemView.java에서의 코드
+```java
+package com.example.mylist;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
+public class SingerItemView extends LinearLayout {
+    TextView textView;TextView textView2;//변수 전체 선언
+    ImageView imageView;
+    public SingerItemView(Context context) {
+        super(context);
+        init(context);
+    }
+
+    public SingerItemView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    private void init(Context context){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);///캐스팅(LayoutInflater)
+        inflater.inflate(R.layout.singer_item,this,true);
+
+        textView = (TextView) findViewById(R.id.textView); // singer_item에 넣어 놓은 textview 참조.
+        textView2 = (TextView) findViewById(R.id.textView2);
+        imageView = (ImageView) findViewById(R.id.imageView);
+    }
+
+    public void setName(String name){
+        textView.setText(name);
+    }
+    public void setMobile(String mobile){
+        textView2.setText(mobile);
+    }
+
+    public void setImageView(int resId){
+        imageView.setImageResource(resId);//resId를 파라미터로 전달
+    }
+
+}
+```
+17. SingerItem.java에서의 코드
+```java
+package com.example.mylist;
+
+public class SingerItem {
+
+    String name;
+    String mobile;
+    int resId;//resId는 이미지를 지정
+
+    public SingerItem(String name, String mobile, int resId) {
+        this.name = name;
+        this.mobile = mobile;
+        this.resId = resId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public int getResId() {
+        return resId;
+    }
+
+    public void setResId(int resId) {
+        this.resId = resId;
+    }
+
+    @Override
+    public String toString() {
+        return "SingerItem{" +
+                "name='" + name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                '}';
+    }
+
+
+
+}
+```
+18. MainActivity.java에서 클릭시 토스트 나오게 하는 코드
+'''java
+package com.example.mylist;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    SingerAdapter adapter;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ListView listView = (ListView) findViewById(R.id.listView);//리스트 뷰 객체 찾기
+
+        adapter = new SingerAdapter();//객체 생성
+
+        adapter.addItem(new SingerItem("트와이스","010-1000-1000",R.drawable.twice));
+        adapter.addItem(new SingerItem("블랙핑크","010-2000-2000",R.drawable.blackpink));
+        adapter.addItem(new SingerItem("에이프릴","010-3000-3000",R.drawable.april));
+        adapter.addItem(new SingerItem("오마이걸","010-4000-4000",R.drawable.ohmygirl));
+        adapter.addItem(new SingerItem("레드벨벳","010-5000-5000",R.drawable.redvelvet));
+        listView.setAdapter(adapter);//adapter 객체를 파라미터로 전달 => 리스트뷰가 어댑터를 알게 됨
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SingerItem item = (SingerItem) adapter.getItem(i);
+                Toast.makeText(getApplicationContext(),"선택 : " + item.getName(),Toast.LENGTH_LONG).show();
+                //리스트 선택하면 토스트 메시지가 보이도록 함.
+            }
+        });
+
+
+    }
+
+    class SingerAdapter extends BaseAdapter{
+        ArrayList<SingerItem> items = new ArrayList<SingerItem>();
+        @Override
+        public int getCount() {
+            return items.size();//위의 아이템의 개수가 몇 개인지 알려줌.
+        }
+
+        public void addItem(SingerItem item){
+            items.add(item);
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View convertView, ViewGroup viewGroup) {
+            SingerItemView view = new SingerItemView(getApplicationContext());
+
+            SingerItem item = items.get(i); //아이템 안에 데이터가 들어가 있는 것.
+            view.setName(item.getName());
+            view.setMobile(item.getMobile());
+            view.setImage(item.getResId());//데이터에서 관리하는 것을 가지고 와서 뷰에 설정해줌.,위에 이미지를 붙어주게 됨.
+
+            return view;//이 뷰를 리턴해주면 그대로 리스트 뷰 하나의 아이템으로 보임.
+        }
+    }
+
+}
+'''
+19. activity_main에서 plaintext추가
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="추가" />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="53dp" />
+</RelativeLayout>
+```
+20. 버튼 누르면 정보가 추가되는 코드(MainActivity.java)에서
+```java
+package com.example.mylist;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    SingerAdapter adapter;
+
+    EditText editText;
+    EditText editText2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ListView listView = (ListView) findViewById(R.id.listView);//리스트 뷰 객체 찾기
+
+        editText = (EditText)findViewById(R.id.editText);//캐스팅해서 할당.
+        editText2 = (EditText)findViewById(R.id.editText2);
+
+        adapter = new SingerAdapter();//객체 생성
+
+        adapter.addItem(new SingerItem("트와이스","010-1000-1000",R.drawable.twice));
+        adapter.addItem(new SingerItem("블랙핑크","010-2000-2000",R.drawable.blackpink));
+        adapter.addItem(new SingerItem("에이프릴","010-3000-3000",R.drawable.april));
+        adapter.addItem(new SingerItem("오마이걸","010-4000-4000",R.drawable.ohmygirl));
+        adapter.addItem(new SingerItem("레드벨벳","010-5000-5000",R.drawable.redvelvet));
+        listView.setAdapter(adapter);//adapter 객체를 파라미터로 전달 => 리스트뷰가 어댑터를 알게 됨
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SingerItem item = (SingerItem) adapter.getItem(i);
+                Toast.makeText(getApplicationContext(),"선택 : " + item.getName(),Toast.LENGTH_LONG).show();
+                //리스트 선택하면 토스트 메시지가 보이도록 함.
+            }
+        });
+
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editText.getText().toString();//이름값.
+                String mobile = editText2.getText().toString();//이름과 전화번호 값이 들어옴.
+
+                adapter.addItem(new SingerItem(name,mobile,R.drawable.twice));
+                adapter.notifyDataSetChanged();//어댑터 쪽에서 리스트뷰쪽으로 갱신하라고 알려줌.
+            }
+        });
+
+    }
+
+    class SingerAdapter extends BaseAdapter{
+        ArrayList<SingerItem> items = new ArrayList<SingerItem>();
+        @Override
+        public int getCount() {
+            return items.size();//위의 아이템의 개수가 몇 개인지 알려줌.
+        }
+
+        public void addItem(SingerItem item){
+            items.add(item);
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View convertView, ViewGroup viewGroup) {
+            SingerItemView view =null;
+            if(convertView == null){
+                view = new SingerItemView(getApplicationContext());
+            }else{
+                view = (SingerItemView)convertView;
+            }//데이터 절약 코드
+
+            SingerItem item = items.get(i); //아이템 안에 데이터가 들어가 있는 것.
+            view.setName(item.getName());
+            view.setMobile(item.getMobile());
+            view.setImage(item.getResId());//데이터에서 관리하는 것을 가지고 와서 뷰에 설정해줌.,위에 이미지를 붙어주게 됨.
+
+            return view;//이 뷰를 리턴해주면 그대로 리스트 뷰 하나의 아이템으로 보임.
+        }
+    }
+
+}
+```

@@ -1,0 +1,225 @@
+# 4. 화면 내비게이션 - 2. 프래그먼트 사용하기 - 1) 프래그먼트로 이미지뷰어 만들기
+1. 프래그먼트를 2개를 넣을 건데, 프래그먼트를 먼저 정의 해야함.
+- 프래그먼트는 레이아웃 파일 하나와 자바 소스 파일 하나로 구성된다.
+2.ListFragment.java
+```java
+package com.example.fragment2;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class ListFragment extends Fragment {
+    //Generate > overrideMethods > onCreateView  이 구성 안에서 인플레이션을 해주어야 함.
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //이 구성 안에서 인플레이션을 해주어야 함.
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_list,container,false);
+
+        Button button = (Button) rootView.findViewById(R.id.button);
+        return rootView;
+    }
+}
+```
+3. ViewerFragment.java
+```java
+package com.example.fragment2;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class ViewerFragment extends Fragment {
+    //Generate > overrideMethods > onCreateView  이 구성 안에서 인플레이션을 해주어야 함.
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //이 구성 안에서 인플레이션을 해주어야 함.
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_viewer,container,false);
+
+        ImageView imageView = (ImageView)rootView.findViewById(R.id.imageView);
+        return rootView;
+    }
+}
+```
+4. ListFragment.java
+```
+java
+package com.example.fragment2;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class ListFragment extends Fragment {
+    MainActivity activity;
+    //Generate > OverrideMethods > onAttach(프래그먼트가 액티비티로 올라오는 순간).
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        activity = (MainActivity) getActivity();//참조.
+    }
+
+
+    //Generate > overrideMethods > onCreateView  이 구성 안에서 인플레이션을 해주어야 함.
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //이 구성 안에서 인플레이션을 해주어야 함.
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_list,container,false);
+
+        Button button = (Button) rootView.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //이 버튼이 클릭되면, 이미지뷰어1이 떠야함.
+                activity.onImageChange(0);//액티비티에서 이 인덱스를 받아서 뷰어프래그먼트로 전달해줌.
+            }
+        });
+
+        Button button2 = (Button) rootView.findViewById(R.id.button);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.onImageChange(1);
+
+            }
+        });
+
+        Button button3 = (Button) rootView.findViewById(R.id.button);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.onImageChange(2);
+
+            }
+        });
+        return rootView;
+    }
+}
+```
+5. MainActivity.java
+```
+java
+package com.example.fragment2;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
+import android.os.Bundle;
+
+public class MainActivity extends AppCompatActivity {
+    ListFragment fragment1;
+    ViewerFragment fragment2;
+
+    FragmentManager manager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        manager = getSupportFragmentManager();
+
+        fragment1 = (ListFragment) manager.findFragmentById(R.id.list_fragment);//이미 xml 레이아웃에 포함되어있기 때문.
+        fragment2 = (ViewerFragment) manager.findFragmentById(R.id.viewer_fragment);
+    }
+
+    public void onImageChange(int index){
+        //MainActivity 에서 프래그먼트를 띄워주는 메서드, index 에 따라서 이미지가 달라지도록 함.
+        // 이 안에서 리스트 프래그먼트 쪽으로 뭔가 호출해서 정보를 전달해주어야함.
+        fragment2.setImage(index);
+    }
+
+}
+```
+6. ViewerFragment.java
+```java
+package com.example.fragment2;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class ViewerFragment extends Fragment {
+    ImageView imageView;
+    //Generate > overrideMethods > onCreateView  이 구성 안에서 인플레이션을 해주어야 함.
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //이 구성 안에서 인플레이션을 해주어야 함.
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_viewer,container,false);
+
+        imageView = (ImageView)rootView.findViewById(R.id.imageView);
+        return rootView;
+    }
+
+    public void setImage(int index){
+        if(index ==0 ){
+            imageView.setImageResource(R.drawable.one);
+        }else if(index == 1){
+            imageView.setImageResource(R.drawable.two);
+        }else if(index == 2) {
+            imageView.setImageResource(R.drawable.three);
+        }
+    }
+}
+```
+7. activity_main.xml
+```
+java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:name="com.example.fragment2.ListFragment"
+        android:id="@+id/list_fragment"/>
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:name="com.example.fragment2.ViewerFragment"
+        android:id="@+id/viewer_fragment"/>
+
+
+</LinearLayout>
+```

@@ -1,0 +1,22 @@
+1-8-1 상태 드로어블
+1. 상태 드로어블 = 버튼이 상태에 따라서 어떤 이미지가 보여주게 되는지.
+2. 방법
+ (1) 먼저 버튼에 배경이미지 넣어주기
+ (2) 새로운 xml파일을 drawable에 만들어주기
+ (3) 코드
+```java 
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/one"
+        />
+
+    <item
+        android:drawable="@drawable/two"
+        />
+
+</selector>
+```
+ (4) 버튼 background에 새로 만든 xml파일 추가
