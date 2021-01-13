@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DroidCafeOptions.iml" filepath="$PROJECT_DIR$/.idea/modules/DroidCafeOptions.iml" group="DroidCafeOptions" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="DroidCafeOptions/app" />
+    </modules>
+  </component>
+</project>
