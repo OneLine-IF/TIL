@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Homework_04_5</string>
+    <string name="first_food"><b>떡볶이\n</b></string>
+    <string name="first_food_describe">떡볶이에 대한 설명</string>
+    <string name="second_food"><b>된장찌개\n</b></string>
+    <string name="second_food_describe">된장찌개에 대한 설명</string>
+    <string name="third_food"><b>제육볶음\n</b></string>
+    <string name="third_food_describe">제육볶음에 대한 설명</string>
+    <string name="forth_food"><b>계란말이\n</b></string>
+    <string name="forth_food_describe">계란말이에 대한 설명</string>
+    <string name="fifth_food"><b>닭갈비\n</b></string>
+    <string name="fifth_food_describe">닭갈비에 대한 설명</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
