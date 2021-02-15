@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -84,7 +85,7 @@ public class DivisionActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_setting1:
-                Intent intent1 = new Intent(this, PlusActivity.class);
+                Intent intent1 = new Intent(this, MainActivity.class);
                 startActivity(intent1);
                 return true;
             case R.id.action_setting2:

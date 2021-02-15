@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar myToolbar;
     private EditText editText;
     private Button btn[] = new Button[16];
-    private int i=0;
+
 
 
     @Override
@@ -33,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
         myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        init();
-        initListener();
+        btnSet();
+        btnListener();
 
 
     }
 
-    private void init() {
+    private void btnSet() {
         btn[0]=findViewById(R.id.btn1);
         btn[1]=findViewById(R.id.btn2);
         btn[2]=findViewById(R.id.btn3);
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.editTextTextPersonName);
     }
 
-    private void initListener() {
+    private void btnListener() {
         for(int i =0;i<10;i++){
             btn[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,11 +95,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //return super.onOptionsItemSelected(item);
         switch (item.getItemId()){
-            case R.id.action_setting1:
-                Log.d(LOG_TAG, "Button clicked!");
-                Intent intent1 = new Intent(this, PlusActivity.class);
-                startActivity(intent1);
-                return true;
             case R.id.action_setting2:
                 Log.d(LOG_TAG, "Button clicked!");
                 Intent intent2 = new Intent(this, MinusActivity.class);
@@ -116,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent4);
                 return true;
             default:
-                Toast.makeText(getApplicationContext(),"나머지", Toast.LENGTH_SHORT).show();
                 return super.onOptionsItemSelected(item);
         }
     }
