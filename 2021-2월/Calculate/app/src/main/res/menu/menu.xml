@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/action_setting1"
+        android:title="더하기"
+        android:icon="@drawable/ic_plus"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_setting2"
+        android:title="빼기"
+        android:icon="@drawable/ic_minus"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_setting3"
+        android:title="곱하기"
+        android:icon="@drawable/ic_multiplication"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_setting4"
+        android:title="나누기"
+        android:icon="@drawable/ic_division"
+        app:showAsAction="never" />
+</menu>
